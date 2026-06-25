@@ -1,0 +1,20 @@
+# --- SEGURIDAD ---
+# Bloquear la llave maestra de Firebase
+backend/firebase-config.json
+
+# --- .NET (Backend) ---
+# Ignorar archivos de compilación y dependencias locales
+backend/bin/
+backend/obj/
+backend/Properties/launchSettings.json
+
+# --- FRONTEND (Para cuando lo creemos) ---
+# Ignorar módulos de Node y empaquetados
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+.env
+
+# --- SISTEMA ---
+.DS_Store
+Thumbs.db
