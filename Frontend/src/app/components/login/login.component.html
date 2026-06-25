@@ -1,7 +1,9 @@
 <div class="login-container">
   <div class="login-card">
-    <h1> 14-Track</h1>
-    <p class="subtitle">Ingrese sus credenciales para reportar exploradores</p>
+    <h2>{{ isLoginMode ? ' Login' : ' Creando Cuenta' }}</h2>
+    <p class="subtitle">
+      {{ isLoginMode ? 'Ingrese sus credenciales de comandante' : 'Regístrese para Tener su Usuario' }}
+    </p>
 
     <form (ngSubmit)="onSubmit()">
       <div class="form-group">
@@ -13,12 +15,55 @@
         <label for="password">Contraseña</label>
         <input type="password" id="password" [(ngModel)]="contrasena" name="contrasena" required placeholder="••••••••">
       </div>
+<div class="form-group" *ngIf="!isLoginMode">
+  <label>Selecciona tu Grupo</label>
+  <div class="grupo-selector">
+    <div class="grupo-item" 
+         [class.selected]="grupo === 'NAVEGANTES'" 
+         (click)="grupo = 'NAVEGANTES'">
+      <img src="icons/navegantes.png" alt="Navegantes">
+      <span>Navegantes</span>
+    </div>
+
+    <div class="grupo-item" 
+         [class.selected]="grupo === 'PIONEROS'" 
+         (click)="grupo = 'PIONEROS'">
+     <img src="icons/pioneros.png" alt="pioneros">
+      <span>Pioneros</span>
+    </div>
+
+    <div class="grupo-item" 
+         [class.selected]="grupo === 'SEGUIDORES'" 
+         (click)="grupo = 'SEGUIDORES'">
+     <img src="icons/seguidores.png" alt="Seguidores">
+      <span>Seguidores</span>
+    </div>
+
+    <div class="grupo-item" 
+         [class.selected]="grupo === 'EXPLORADORES'" 
+         (click)="grupo = 'EXPLORADORES'">
+     <img src="icons/exploradores.png" alt="Exploradores">
+      <span>Exploradores</span>
+    </div>
+  </div>
+</div>
+
+
+
 
       <div *ngIf="errorMensaje" class="error-box">
         {{ errorMensaje }}
       </div>
 
-      <button type="submit" class="btn-login">Ingresar al Sistema</button>
+      <button type="submit" class="btn-login">
+        {{ isLoginMode ? 'Ingresar al Sistema' : 'Crear Cuenta ' }}
+      </button>
+
+      <div class="divider">ó</div>
+
+      <button type="button" class="btn-toggle" (click)="toggleMode()">
+        {{ isLoginMode ? '¿No tiene usuario? Regístrese aquí' : '¿Ya tiene cuenta? Inicie Sesión' }}
+      </button>
     </form>
   </div>
 </div>
