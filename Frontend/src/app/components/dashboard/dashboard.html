@@ -1,0 +1,144 @@
+<div class="loading-screen" *ngIf="cargando">
+  <div class="rosa-container">
+    <img src="icons/rosaNautica.png" alt="Rosa Náutica" class="rosa-giratoria">
+  </div>
+  <p>Asignando Tus Credenciales...</p>
+</div>
+
+<div class="dashboard-container" *ngIf="!cargando">
+  
+  <nav class="navbar">
+    <div class="brand">
+      <span class="logo-icon">🚀</span>
+      <h1>14-TRACK</h1>
+    </div>
+    <div class="user-info">
+      <span class="badge" [ngClass]="grupoUsuario.toLowerCase()">{{ grupoUsuario }}</span>
+      <span class="email">{{ emailUsuario }}</span>
+      <button class="btn-logout" (click)="cerrarSesion()">Salir</button>
+    </div>
+  </nav>
+
+  <main class="main-content">
+    
+    @if (grupoUsuario === 'NAVEGANTES') {
+      <div class="welcome-banner navegantes">
+        <h2>Módulo de Navegantes</h2>
+        <p>¡Bienvenido a bordo! Tu flota está lista para el despegue. Revisa tus misiones del destacamento.</p>
+      </div>
+
+      <div class="modules-grid">
+        <div class="grid-card">
+          <div class="card-icon">📅</div>
+          <h3>Asistencia</h3>
+          <p>Control de asistencia a las reuniones semanales y despegues de la flota.</p>
+          <div class="status-badge">Bitácora Activa</div>
+        </div>
+        <div class="grid-card">
+          <div class="card-icon">⭐</div>
+          <h3>Premio de Destreza</h3>
+          <p>Progreso de tus parches, medallas básicas y especialidades náuticas.</p>
+          <div class="status-badge">Galardón Estelar</div>
+        </div>
+        <div class="grid-card">
+          <div class="card-icon">📖</div>
+          <h3>Estudio Bíblico</h3>
+          <p>Lecturas asignadas de la Ruta de la Promesa y memorización de versículos.</p>
+          <div class="status-badge">Mi Bitácora</div>
+        </div>
+      </div>
+    }
+
+    @else if (grupoUsuario === 'PIONEROS') {
+      <div class="welcome-banner pioneros">
+        <h2>Módulo de Pioneros</h2>
+        <p>Listo para abrir nuevos senderos. Prepara las herramientas de exploración y el campamento base.</p>
+      </div>
+
+      <div class="modules-grid">
+        <div class="grid-card">
+          <div class="card-icon">⛺</div>
+          <h3>Asistencia</h3>
+          <p>Registro oficial de puntualidad y asistencia en los campamentos semanales.</p>
+          <div class="status-badge">Pase de Lista</div>
+        </div>
+        <div class="grid-card">
+          <div class="card-icon">🪓</div>
+          <h3>Premio de Destreza</h3>
+          <p>Evaluación de nudos, amarres, herrería y técnicas de supervivencia en campo.</p>
+          <div class="status-badge">Insignias de Rango</div>
+        </div>
+        <div class="grid-card">
+          <div class="card-icon">🧭</div>
+          <h3>Estudio Bíblico</h3>
+          <p>Devocionales de campo, códigos de honor y caminatas de reflexión espiritual.</p>
+          <div class="status-badge">Brújula Activa</div>
+        </div>
+      </div>
+    }
+
+    @else if (grupoUsuario === 'SEGUIDORES') {
+      <div class="welcome-banner seguidores">
+        <h2>Módulo de Seguidores</h2>
+        <p>Entrenamiento de líderes en marcha. Consulta tus asignaciones en la academia.</p>
+      </div>
+
+      <div class="modules-grid">
+        <div class="grid-card">
+          <div class="card-icon">🎖️</div>
+          <h3>Asistencia</h3>
+          <p>Control estricto de asistencia en las aulas de formación militar y desfiles.</p>
+          <div class="status-badge">Academia de Líderes</div>
+        </div>
+        <div class="grid-card">
+          <div class="card-icon">🛡️</div>
+          <h3>Premio de Destreza</h3>
+          <p>Créditos acumulados en liderazgo, civismo, primeros auxilios corporativos y méritos.</p>
+          <div class="status-badge">Medalla de Honor</div>
+        </div>
+        <div class="grid-card">
+          <div class="card-icon">⚔️</div>
+          <h3>Estudio Bíblico</h3>
+          <p>Análisis bíblico profundo, cuestionarios teológicos y lecciones maestras.</p>
+          <div class="status-badge">Espada de la Palabra</div>
+        </div>
+      </div>
+    }
+
+    @else if (grupoUsuario === 'EXPLORADORES') {
+      <div class="welcome-banner exploradores">
+        <h2>Módulo de Exploradores</h2>
+        <p>Misión de reconocimiento activa. Analiza los desafíos del terreno, mapas de supervivencia y reportes de campo.</p>
+      </div>
+
+      <div class="modules-grid">
+        <div class="grid-card">
+          <div class="card-icon">🗺️</div>
+          <h3>Asistencia</h3>
+          <p>Reportes de campo y registro de misiones de reconocimiento activas en el terreno.</p>
+          <div class="status-badge">Reporte de Campo</div>
+        </div>
+        <div class="grid-card">
+          <div class="card-icon">🦅</div>
+          <h3>Premio de Destreza</h3>
+          <p>Evaluación de rastreo, supervivencia avanzada, cartografía y primeros auxilios de combate.</p>
+          <div class="status-badge">Altos Honores</div>
+        </div>
+        <div class="grid-card">
+          <div class="card-icon">🔥</div>
+          <h3>Reto Espiritual</h3>
+          <p>Desafíos devocionales avanzados, lecturas de liderazgo y servicio comunitario obligatorio.</p>
+          <div class="status-badge">Misión Espiritual</div>
+        </div>
+      </div>
+    }
+
+    @else {
+      <div class="panel-card error-panel">
+        <h2>⚠️ Estado de Cuenta Indefinido</h2>
+        <p>No se pudo identificar tu grupo en la base de datos de 14-TRACK. Revisa tu perfil o contacta al administrador.</p>
+      </div>
+    }
+
+  </main>
+</div>
