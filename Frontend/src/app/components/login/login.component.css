@@ -176,6 +176,49 @@ input:focus {
 /* Efecto al seleccionar */
 .grupo-item.selected {
   border-color: #ff0000;
-  background: #2a1010;
+  background: #040101;
   color: #fff;
+}
+.error-alert {
+  background-color: rgba(255, 0, 0, 0.15); /* Fondo rojo sutil */
+  border: 1px solid #ff0000;              /* Borde rojo de advertencia */
+  border-left: 5px solid #ff0000;         /* Línea distintiva a la izquierda */
+  border-radius: 6px;
+  padding: 12px;
+  margin: 15px 0;                         /* Espaciado para que no choque con los inputs */
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* El texto dentro del error */
+.error-alert p {
+  color: #ffcccc;                         /* Rojo claro muy legible sobre oscuro */
+  margin: 0;
+  font-size: 0.9rem;
+  text-align: left;
+  line-height: 1.4;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.error-icon {
+  font-size: 1.2rem;
+}
+
+/* Estilo para el botón de Submit si no lo tenías separado */
+button[type="submit"] {
+  width: 100%;
+  background-color: #ff0000;
+  color: white;
+  border: none;
+  padding: 0.8rem;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background-color 0.2s;
+}
+
+button[type="submit"]:hover {
+  background-color: #b30000;
 }
