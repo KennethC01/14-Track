@@ -34,7 +34,9 @@ export class LoginComponent {
     this.isLoginMode = !this.isLoginMode;
     this.errorMensaje = '';
   }
-
+debugClick() {
+  console.log("¡El botón fue presionado!");
+}
   async onSubmit() {
   console.log("Iniciando onSubmit..."); // <--- 1. Mira si esto sale en la consola (F12)
   
