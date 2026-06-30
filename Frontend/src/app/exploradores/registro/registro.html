@@ -5,7 +5,7 @@
 
   <div class="registro-card">
     <div class="registro-header">
-      <h2> Ingreso de Muchachos (Base de Datos Central)</h2>
+      <h2> Ingreso de Muchachos </h2>
       <p>Completa la ficha para registrar un nuevo muchacho en el sistema 14-TRACK.</p>
     </div>
 
@@ -16,8 +16,8 @@
       </div>
 
       <div class="form-group">
-        <label>Grupo / Sección:</label>
-        <select [(ngModel)]="nuevoGrupo" class="form-input">
+        <label>Grupo / Sección (Asignado Automáticamente):</label>
+        <select [(ngModel)]="nuevoGrupo" class="form-input" disabled>
           <option value="NAVEGANTES">Navegantes</option>
           <option value="PIONEROS">Pioneros</option>
           <option value="EXPLORADORES">Exploradores</option>
@@ -32,9 +32,9 @@
           <option value="LOBOS">Lobos</option>
           <option value="JAGUARES">Jaguares</option>
           <option value="FLOTA DELTA">Flota Delta</option>
-          <option value="FLOTA DELTA">Guia Mayor</option>
-          <option value="FLOTA DELTA">Guia Mayor Auxiliar</option>
-          <option value="FLOTA DELTA">Capellan Auxiliar</option>         
+          <option value="GUIA MAYOR">Guia Mayor</option>
+          <option value="GUIA MAYOR AUXILIAR">Guia Mayor Auxiliar</option>
+          <option value="CAPELLAN AUXILIAR">Capellan Auxiliar</option>         
           <option value="SIN PATRULLA">Sin Patrulla (General)</option>
         </select>
       </div>
@@ -51,19 +51,19 @@
   </div>
 
   <div class="registro-card" style="margin-top: 2rem;">
-    <h3>📋 Muchachos Registrados en el Sistema</h3>
+    <h3>📋 Muchachos Registrados en {{ nuevoGrupo | titlecase }}</h3>
     <div class="tabla-scroll">
       <table class="muchachos-table">
         <thead>
           <tr>
             <th>Nombre</th>
             <th>Grupo</th>
-            <th>Patrulla</th>
-            <th>Acciones</th>
+            <th>Patrulla / Cargo</th>
+            <th>Eliminar</th>
           </tr>
         </thead>
         <tbody>
-          @for (m of muchachos; track m.id) {
+          @for (m of muchachosFiltrados; track m.id) {
             <tr>
               <td>{{ m.nombre }}</td>
               <td><span class="badge-patrulla" style="color: #ff0000;">{{ m.grupo }}</span></td>
@@ -72,7 +72,9 @@
             </tr>
           } @empty {
             <tr>
-              <td colspan="4" style="text-align: center; color: #666; padding: 1.5rem;">Cargando base de datos o sin registros...</td>
+              <td colspan="4" style="text-align: center; color: #666; padding: 1.5rem;">
+                No hay muchachos registrados en {{ nuevoGrupo | titlecase }} todavía.
+              </td>
             </tr>
           }
         </tbody>
