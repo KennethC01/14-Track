@@ -1,0 +1,74 @@
+<div class="ascenso-container">
+  <!-- Encabezado del Módulo -->
+  <header class="ascenso-header">
+    <div class="header-info">
+      <button class="btn-back" routerLink="/dashboard">⬅ Volver al Dashboard</button>
+      <h2>Control de Ascenso: <span class="badge-grupo">{{ grupoActual }}</span></h2>
+      <p>Los cambios en los parches y liderazgo se guardan automáticamente en la nube.</p>
+    </div>
+  </header>
+
+  <!-- Tabla de Control de Ascensos -->
+  <div class="table-responsive">
+    <table class="ascenso-table">
+      <thead>
+        <tr>
+          <th>Muchacho</th>
+          <th>Patrulla</th>
+          <!-- Cabeceras Dinámicas de Premios de Destreza -->
+          @for (col of premiosDestreza; track col.id) {
+            <th class="col-destreza">{{ col.label }}</th>
+          }
+          <!-- Cabeceras Dinámicas de Liderazgo -->
+          @for (col of liderazgoColumnas; track col.id) {
+            <th class="col-liderazgo">{{ col.label }}</th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (muchacho of muchachos; track muchacho.id) {
+          <tr>
+            <td class="muchacho-nombre"><strong>{{ muchacho.nombre }}</strong></td>
+            <td>
+              <span class="badge-patrulla">{{ muchacho.patrulla || 'Sin Patrulla' }}</span>
+            </td>
+
+            <!-- Checkboxes Dinámicos para Premios de Destreza -->
+            @for (col of premiosDestreza; track col.id) {
+              <td class="text-center">
+                <label class="checkbox-container">
+                  <input 
+                    type="checkbox" 
+                    [(ngModel)]="muchacho.ascenso[col.id]" 
+                    (change)="guardarProgreso(muchacho)"
+                  >
+                  <span class="checkmark"></span>
+                </label>
+              </td>
+            }
+
+            <!-- Checkboxes Dinámicos para Columnas de Liderazgo -->
+            @for (col of liderazgoColumnas; track col.id) {
+              <td class="text-center">
+                <label class="checkbox-container">
+                  <input 
+                    type="checkbox" 
+                    [(ngModel)]="muchacho.ascenso[col.id]" 
+                    (change)="guardarProgreso(muchacho)"
+                  >
+                  <span class="checkmark-liderazgo"></span>
+                </label>
+              </td>
+            }
+          </tr>
+        } @empty {
+          <tr>
+            <td [attr.colspan]="2 + premiosDestreza.length + liderazgoColumnas.length" class="text-center no-data">
+              No se encontraron muchachos registrados en la lista de {{ grupoActual.toLowerCase() }}.
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,6 +1,6 @@
 <div class="loading-screen" *ngIf="cargando">
   <div class="rosa-container">
-    <img src="icons/rosaNautica.png" alt="Rosa Náutica" class="rosa-giratoria">
+    <img src="/icons/rosaNautica.png" alt="Rosa Náutica" class="rosa-giratoria">
   </div>
   <p>Asignando Tus Credenciales...</p>
 </div>
@@ -28,7 +28,10 @@
 
       <div class="modules-grid">
         <div class="grid-card">
-          <div class="card-icon">🗺️</div>
+          <div class="card-icon">
+            <!-- Icono personalizado para Asistencia -->
+            <img src="/icons/users.png" alt="Icono Asistencia" class="custom-icon">
+          </div>
           <h3>Asistencia</h3>
           <p>Registro de Asistencia de los muchachos.</p>
           <div class="status-badge" routerLink="/navegantes/asistencia" style="cursor: pointer;">
@@ -37,7 +40,10 @@
         </div>
 
         <div class="grid-card"> 
-          <div class="card-icon">➕</div>
+          <div class="card-icon">
+            <!-- Icono personalizado para Ingreso -->
+            <img src="/icons/plus.png" alt="Icono Ingreso" class="custom-icon">
+          </div>
           <h3>Ingreso de Muchachos</h3>
           <p>Dar de alta nuevos muchachos en la base de datos.</p>
           <div class="status-badge" routerLink="/navegantes/registro" style="cursor: pointer;">
@@ -46,7 +52,10 @@
         </div>
 
         <div class="grid-card">
-          <div class="card-icon">🦅</div>
+          <div class="card-icon">
+            <!-- Icono personalizado para Ascenso -->
+            <img src="/icons/grafico.png" alt="Icono Ascenso" class="custom-icon">
+          </div>
           <h3>Ascenso</h3>
           <p>Progreso de tus parches, especialidades náuticas y lecturas de la Ruta de la Promesa.</p>
           <div class="status-badge" routerLink="/navegantes/ascenso" style="cursor: pointer;">
@@ -64,7 +73,10 @@
 
       <div class="modules-grid">
         <div class="grid-card">
-          <div class="card-icon">🗺️</div>
+          <div class="card-icon">
+            <!-- Icono personalizado para Asistencia -->
+            <img src="/icons/users.png" alt="Icono Asistencia" class="custom-icon">
+          </div>
           <h3>Asistencia</h3>
           <p>Registro de Asistencia de los muchachos.</p>
           <div class="status-badge" routerLink="/pioneros/asistencia" style="cursor: pointer;">
@@ -73,7 +85,10 @@
         </div>
 
         <div class="grid-card"> 
-          <div class="card-icon">➕</div>
+          <div class="card-icon">
+            <!-- Icono personalizado para Ingreso -->
+            <img src="/icons/plus.png" alt="Icono Ingreso" class="custom-icon">
+          </div>
           <h3>Ingreso de Muchachos</h3>
           <p>Dar de alta nuevos muchachos en la base de datos.</p>
           <div class="status-badge" routerLink="/pioneros/registro" style="cursor: pointer;">
@@ -82,7 +97,10 @@
         </div>
 
         <div class="grid-card">
-          <div class="card-icon">🦅</div>
+          <div class="card-icon">
+            <!-- Icono personalizado para Ascenso -->
+            <img src="/icons/grafico.png" alt="Icono Ascenso" class="custom-icon">
+          </div>
           <h3>Ascenso</h3>
           <p>Evaluación de técnicas de supervivencia y devocionales de campo de la brújula.</p>
           <div class="status-badge" routerLink="/pioneros/ascenso" style="cursor: pointer;">
@@ -100,7 +118,10 @@
 
       <div class="modules-grid">
         <div class="grid-card">
-          <div class="card-icon">🗺️</div>
+          <div class="card-icon">
+            <!-- Icono personalizado para Asistencia -->
+            <img src="/icons/users.png" alt="Icono Asistencia" class="custom-icon">
+          </div>
           <h3>Asistencia</h3>
           <p>Registro de Asistencia de los muchachos.</p>
           <div class="status-badge" routerLink="/seguidores/asistencia" style="cursor: pointer;">
@@ -109,7 +130,10 @@
         </div>
 
         <div class="grid-card"> 
-          <div class="card-icon">➕</div>
+          <div class="card-icon">
+            <!-- Icono personalizado para Ingreso -->
+            <img src="/icons/plus.png" alt="Icono Ingreso" class="custom-icon">
+          </div>
           <h3>Ingreso de Muchachos</h3>
           <p>Dar de alta nuevos muchachos en la base de datos.</p>
           <div class="status-badge" routerLink="/seguidores/registro" style="cursor: pointer;">
@@ -118,7 +142,10 @@
         </div>
 
         <div class="grid-card">
-          <div class="card-icon">🦅</div>
+          <div class="card-icon">
+            <!-- Icono personalizado para Ascenso -->
+            <img src="/icons/grafico.png" alt="Icono Ascenso" class="custom-icon">
+          </div>
           <h3>Ascenso</h3>
           <p>Créditos acumulados en liderazgo, méritos y análisis bíblico profundo.</p>
           <div class="status-badge" routerLink="/seguidores/ascenso" style="cursor: pointer;">
@@ -128,7 +155,7 @@
       </div>
     }
 
-   @else if (grupoUsuario === 'EXPLORADORES') {
+    @else if (grupoUsuario === 'EXPLORADORES') {
       <div class="welcome-banner exploradores">
         <h2>Módulo de Exploradores</h2>
         <p>BIENVENIDO!</p>
@@ -136,7 +163,9 @@
 
       <div class="modules-grid">
         <div class="grid-card">
-          <div class="card-icon">🗺️</div>
+          <div class="card-icon">
+            <img src="/icons/users.png" alt="Icono Asistencia" class="custom-icon">
+          </div>
           <h3>Asistencia</h3>
           <p>Registro de Asistencia de los muchachos.</p>
           <div class="status-badge" routerLink="/exploradores/asistencia" style="cursor: pointer;">
@@ -145,7 +174,9 @@
         </div>
 
         <div class="grid-card"> 
-          <div class="card-icon">➕</div>
+          <div class="card-icon">
+              <img src="/icons/plus.png" alt="Icono Asistencia" class="custom-icon">
+          </div>
           <h3>Ingreso de Muchachos</h3>
           <p>Dar de alta nuevos muchachos en la base de datos.</p>
           <div class="status-badge" routerLink="/exploradores/registro" style="cursor: pointer;">
@@ -154,15 +185,18 @@
         </div>
 
         <div class="grid-card">
-          <div class="card-icon">🦅</div>
+            <div class="card-icon">
+              <img src="/icons/grafico.png" alt="Icono Asistencia" class="custom-icon">
+            </div>
           <h3>Ascenso</h3>
-          <p>Evaluación de premios de destrezas y desafíos devocionales avanzados.</p>
+          <p>Evaluación de premios de destrezas, platinos, de liderazgo y retos espirituales.</p>
           <div class="status-badge" routerLink="/exploradores/ascenso" style="cursor: pointer;">
             Registrar Ascenso
           </div>
         </div>
       </div>
     }
+    
     @else {
       <div class="panel-card error-panel">
         <h2>⚠️ Estado de Cuenta Indefinido</h2>

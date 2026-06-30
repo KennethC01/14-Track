@@ -294,3 +294,10 @@
   margin: 0;
   color: #cccccc;
 }
+.custom-icon {
+  width: 70px;      /* Ajusta el ancho a tu gusto */
+  height: 70px;     /* Ajusta el alto a tu gusto */
+  object-fit: cover; /* Evita que la imagen se deforme */
+  filter: brightness(0) invert(1);
+
+}

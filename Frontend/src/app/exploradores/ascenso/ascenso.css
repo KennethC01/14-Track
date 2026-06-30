@@ -1,0 +1,86 @@
+.ascenso-container {
+  padding: 20px;
+  background-color: #000000;
+  min-height: 100vh;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.ascenso-header {
+  margin-bottom: 25px;
+  background: rgb(41, 40, 40);
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.btn-back {
+  background: #6c757d;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.badge-grupo {
+  background: #143f6b;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.9em;
+}
+
+.table-responsive {
+  background: white;
+  border-radius: 8px;
+  overflow-x: auto;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.ascenso-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.ascenso-table th, .ascenso-table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #e9ecef;
+  white-space: nowrap;
+}
+
+.col-destreza { background-color: #e3f2fd; color: #0d47a1; }
+.col-liderazgo { background-color: #fff3e0; color: #e65100; }
+
+.muchacho-nombre { color: #333; font-size: 1.05em; }
+.badge-patrulla {
+  background: #e2e8f0;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 0.85em;
+  font-weight: 600;
+}
+
+.text-center { text-align: center; }
+
+/* Estilos personalizados para Checkboxes interactivos */
+.checkbox-container {
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+  font-size: 22px;
+  user-select: none;
+}
+
+.checkbox-container input {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.no-data {
+  padding: 40px !important;
+  color: #6c757d;
+  font-style: italic;
+}

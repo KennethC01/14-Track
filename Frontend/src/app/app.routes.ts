@@ -3,6 +3,7 @@ import { LoginComponent } from './components/login/login.component';
 import { DashboardComponent } from './components/dashboard/dashboard';
 import { RegistroComponent } from './exploradores/registro/registro';
 import { AsistenciaComponent } from './exploradores/asistencia/asistencia'; 
+import { AscensoComponent } from './exploradores/ascenso/ascenso';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -24,4 +25,9 @@ export const routes: Routes = [
   // EXPLORADORES
   { path: 'exploradores/asistencia', component: AsistenciaComponent },
   { path: 'exploradores/registro', component: RegistroComponent },
+
+  { path: 'navegantes/ascenso', component: AscensoComponent },
+{ path: 'pioneros/ascenso', component: AscensoComponent },
+{ path: 'seguidores/ascenso', component: AscensoComponent },
+{ path: 'exploradores/ascenso', component: AscensoComponent },
 ];
