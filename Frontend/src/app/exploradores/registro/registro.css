@@ -7,7 +7,7 @@
 }
 .btn-back {
   background-color: #1a1a1a;
-  border: 1px solid #333;
+  border: 1px solid #ffffff;
   color: #fff;
   padding: 0.6rem 1.2rem;
   border-radius: 4px;
@@ -16,12 +16,12 @@
 }
 .btn-back:hover { border-color: #ff0000; }
 .registro-card {
-  background-color: #1a1a1a;
-  border: 1px solid #2a2a2a;
+  background-color: #121212;
+  border: 1px solid #ffffff;
   border-radius: 8px;
   padding: 2rem;
 }
-.registro-header h2 { color: #1d211e; margin-bottom: 0.5rem; }
+.registro-header h2 { color: #ffffff; margin-bottom: 0.5rem; }
 .form-grid {
   display: flex;
   flex-direction: column;
@@ -35,7 +35,7 @@
 }
 .form-input {
   background-color: #121212;
-  border: 1px solid #444;
+  border: 1px solid #ff0000;
   color: #fff;
   padding: 0.7rem;
   border-radius: 4px;
@@ -43,7 +43,7 @@
 }
 .form-input:focus { border-color: #1c241e; }
 .btn-submit {
-  background-color: #272c28;
+  background-color: #fc0000;
   color: white;
   border: none;
   padding: 0.8rem;
@@ -51,7 +51,7 @@
   font-weight: bold;
   cursor: pointer;
 }
-.btn-submit:hover { background-color: #212321; }
+.btn-submit:hover { background-color: #850f0f; }
 .muchachos-table {
   width: 100%;
   border-collapse: collapse;

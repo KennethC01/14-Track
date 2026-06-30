@@ -170,7 +170,7 @@
   content: "";
   height: 16px; width: 16px;
   left: 4px; bottom: 4px;
-  background-color: white;
+  background-color: rgb(255, 255, 255);
   transition: .3s;
 }
 
@@ -198,7 +198,7 @@ input:checked + .slider:before {
   background-color: #2a2a2a;  /* Fondo oscuro por si la imagen tarda en cargar */
 }
 
- efecto de brillo rojo sutil al pasar el mouse sobre la foto */
+ /*efecto de brillo rojo sutil al pasar el mouse sobre la foto */
 .avatar-img:hover {
   border-color: #ff0000;
   transform: scale(1.05);

@@ -5,7 +5,7 @@
 
   <div class="asistencia-card">
     <div class="asistencia-header">
-      <h2>🗺️ Registro de Asistencia - Exploradores</h2>
+      <h2>🗺️ Registro de Asistencia - {{ grupoActual | titlecase }}</h2>
       <p>Selecciona la fecha y marca la asistencia de los muchachos para la reunión semanal.</p>
     </div>
 
@@ -14,63 +14,45 @@
         <label for="fecha">Fecha de la Reunión:</label>
         <input type="date" id="fecha" class="input-date">
       </div>
-      <button class="btn-guardar">💾 Guardar Asistencia</button>
+      <button class="btn-guardar" (click)="guardarAsistencia()">💾 Guardar Asistencia</button>
     </div>
 
     <div class="table-responsive">
       <table class="asistencia-table">
         <thead>
           <tr>
-            <th>Explorador</th>
+            <th>{{ grupoActual | titlecase }}</th>
             <th>Asistencia</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td class="user-cell">
-             <img src="boys/kenneth.jpg" alt="Kenneth Caballero" class="avatar-img">
-              <div>
-                <p class="name">Kenneth Caballero</p>
-                <p class="role">Patrulla Águilas</p>
-              </div>
-            </td>
-            <td>
-              <label class="switch">
-                <input type="checkbox" checked>
-                <span class="slider round"></span>
-              </label>
-            </td>
-          </tr>
-          <tr>
-            <td class="user-cell">
-              <span class="avatar">👦</span>
-              <div>
-                <p class="name">Carlos Mendoza</p>
-                <p class="role">Patrulla Águilas</p>
-              </div>
-            </td>
-            <td>
-              <label class="switch">
-                <input type="checkbox">
-                <span class="slider round"></span>
-              </label>
-            </td>
-          </tr>
-          <tr>
-            <td class="user-cell">
-              <span class="avatar">👦</span>
-              <div>
-                <p class="name">Juan Pérez</p>
-                <p class="role">Patrulla Lobos</p>
-              </div>
-            </td>
-            <td>
-              <label class="switch">
-                <input type="checkbox" checked>
-                <span class="slider round"></span>
-              </label>
-            </td>
-          </tr>
+          @for (m of muchachos; track m.id) {
+            <tr>
+              <td class="user-cell">
+                @if (m.avatar && m.avatar !== 'boys/default.png') {
+                  <img [src]="m.avatar" [alt]="m.nombre" class="avatar-img">
+                } @else {
+                  <span class="avatar">👦</span>
+                }
+                <div>
+                  <p class="name">{{ m.nombre }}</p>
+                  <p class="role">{{ m.patrulla }}</p>
+                </div>
+              </td>
+              <td>
+                <label class="switch">
+                  <input type="checkbox" [(ngModel)]="m.asistio">
+                  <span class="slider round"></span>
+                </label>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="2" style="text-align: center; color: #666; padding: 2rem;">
+                No hay muchachos registrados en la lista de {{ grupoActual | titlecase }} para tomar asistencia.
+              </td>
+            </tr>
+          }
         </tbody>
       </table>
     </div>
