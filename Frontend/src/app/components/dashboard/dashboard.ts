@@ -1,15 +1,15 @@
-import { Component, OnInit, NgZone, ChangeDetectorRef } from '@angular/core'; // Added ChangeDetectorRef
+import { Component, OnInit, NgZone, ChangeDetectorRef } from '@angular/core'; 
 import { CommonModule } from '@angular/common'; 
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth'; 
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import { firebaseConfig } from '../../firebase.config';
-import { Router } from '@angular/router'; 
+import { Router, RouterLink } from '@angular/router'; // <-- MODIFICADO: Agregamos RouterLink aquí
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule], 
+  imports: [CommonModule, RouterLink], // <-- MODIFICADO: Agregamos RouterLink a los imports
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css'
 })
@@ -21,7 +21,7 @@ export class DashboardComponent implements OnInit {
   constructor(
     private router: Router, 
     private zone: NgZone,
-    private cdr: ChangeDetectorRef // Inyectamos el detector de cambios
+    private cdr: ChangeDetectorRef 
   ) {} 
 
   ngOnInit() {
@@ -30,18 +30,15 @@ export class DashboardComponent implements OnInit {
       const emailCache = localStorage.getItem('email_temporal');
       const grupoCache = localStorage.getItem('grupo_cache');
 
-      // ⚡ INTENTO DE CARGA INICIAL: Si hay datos locales, los usamos para no mostrar pantalla en blanco
       if (emailCache) {
         this.emailUsuario = emailCache;
         this.grupoUsuario = (grupoCache || 'EXPLORADORES').toUpperCase();
         this.cargando = false; 
         this.cdr.detectChanges();
       } else {
-        // Si es un login totalmente limpio, dejamos el spinner activo hasta que responda Firebase
         this.cargando = true;
       }
 
-      // Conexión en segundo plano con Firebase
       const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
       const auth = getAuth(app);
       const db = getFirestore(app);
@@ -64,7 +61,6 @@ export class DashboardComponent implements OnInit {
             } catch (error) {
               console.error("Error de sincronización silenciosa:", error);
             } finally {
-              // 🔥 CLAVE: Quitar el spinner inmediatamente al terminar la carga de Firebase
               this.cargando = false;
               this.cdr.detectChanges(); 
             }

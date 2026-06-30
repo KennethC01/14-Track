@@ -9,7 +9,6 @@
   
   <nav class="navbar">
     <div class="brand">
-      <span class="logo-icon">🚀</span>
       <h1>14-TRACK</h1>
     </div>
     <div class="user-info">
@@ -29,22 +28,30 @@
 
       <div class="modules-grid">
         <div class="grid-card">
-          <div class="card-icon">📅</div>
+          <div class="card-icon">🗺️</div>
           <h3>Asistencia</h3>
-          <p>Control de asistencia a las reuniones semanales y despegues de la flota.</p>
-          <div class="status-badge">Bitácora Activa</div>
+          <p>Registro de Asistencia de los muchachos.</p>
+          <div class="status-badge" routerLink="/navegantes/asistencia" style="cursor: pointer;">
+            Registrar Asistencia
+          </div>
         </div>
-        <div class="grid-card">
-          <div class="card-icon">⭐</div>
-          <h3>Premio de Destreza</h3>
-          <p>Progreso de tus parches, medallas básicas y especialidades náuticas.</p>
-          <div class="status-badge">Galardón Estelar</div>
+
+        <div class="grid-card"> 
+          <div class="card-icon">➕</div>
+          <h3>Ingreso de Muchachos</h3>
+          <p>Dar de alta nuevos muchachos en la base de datos de Firestore.</p>
+          <div class="status-badge" routerLink="/navegantes/registro" style="cursor: pointer;">
+            Administrar Lista
+          </div>
         </div>
+
         <div class="grid-card">
-          <div class="card-icon">📖</div>
-          <h3>Estudio Bíblico</h3>
-          <p>Lecturas asignadas de la Ruta de la Promesa y memorización de versículos.</p>
-          <div class="status-badge">Mi Bitácora</div>
+          <div class="card-icon">🦅</div>
+          <h3>Ascenso</h3>
+          <p>Progreso de tus parches, especialidades náuticas y lecturas de la Ruta de la Promesa.</p>
+          <div class="status-badge" routerLink="/navegantes/ascenso" style="cursor: pointer;">
+            Registrar Ascenso
+          </div>
         </div>
       </div>
     }
@@ -57,22 +64,30 @@
 
       <div class="modules-grid">
         <div class="grid-card">
-          <div class="card-icon">⛺</div>
+          <div class="card-icon">🗺️</div>
           <h3>Asistencia</h3>
-          <p>Registro oficial de puntualidad y asistencia en los campamentos semanales.</p>
-          <div class="status-badge">Pase de Lista</div>
+          <p>Registro de Asistencia de los muchachos.</p>
+          <div class="status-badge" routerLink="/pioneros/asistencia" style="cursor: pointer;">
+            Registrar Asistencia
+          </div>
         </div>
-        <div class="grid-card">
-          <div class="card-icon">🪓</div>
-          <h3>Premio de Destreza</h3>
-          <p>Evaluación de nudos, amarres, herrería y técnicas de supervivencia en campo.</p>
-          <div class="status-badge">Insignias de Rango</div>
+
+        <div class="grid-card"> 
+          <div class="card-icon">➕</div>
+          <h3>Ingreso de Muchachos</h3>
+          <p>Dar de alta nuevos muchachos en la base de datos de Firestore.</p>
+          <div class="status-badge" routerLink="/pioneros/registro" style="cursor: pointer;">
+            Administrar Lista
+          </div>
         </div>
+
         <div class="grid-card">
-          <div class="card-icon">🧭</div>
-          <h3>Estudio Bíblico</h3>
-          <p>Devocionales de campo, códigos de honor y caminatas de reflexión espiritual.</p>
-          <div class="status-badge">Brújula Activa</div>
+          <div class="card-icon">🦅</div>
+          <h3>Ascenso</h3>
+          <p>Evaluación de técnicas de supervivencia y devocionales de campo de la brújula.</p>
+          <div class="status-badge" routerLink="/pioneros/ascenso" style="cursor: pointer;">
+            Registrar Ascenso
+          </div>
         </div>
       </div>
     }
@@ -85,54 +100,69 @@
 
       <div class="modules-grid">
         <div class="grid-card">
-          <div class="card-icon">🎖️</div>
+          <div class="card-icon">🗺️</div>
           <h3>Asistencia</h3>
-          <p>Control estricto de asistencia en las aulas de formación militar y desfiles.</p>
-          <div class="status-badge">Academia de Líderes</div>
+          <p>Registro de Asistencia de los muchachos.</p>
+          <div class="status-badge" routerLink="/seguidores/asistencia" style="cursor: pointer;">
+            Registrar Asistencia
+          </div>
         </div>
-        <div class="grid-card">
-          <div class="card-icon">🛡️</div>
-          <h3>Premio de Destreza</h3>
-          <p>Créditos acumulados en liderazgo, civismo, primeros auxilios corporativos y méritos.</p>
-          <div class="status-badge">Medalla de Honor</div>
+
+        <div class="grid-card"> 
+          <div class="card-icon">➕</div>
+          <h3>Ingreso de Muchachos</h3>
+          <p>Dar de alta nuevos muchachos en la base de datos de Firestore.</p>
+          <div class="status-badge" routerLink="/seguidores/registro" style="cursor: pointer;">
+            Administrar Lista
+          </div>
         </div>
+
         <div class="grid-card">
-          <div class="card-icon">⚔️</div>
-          <h3>Estudio Bíblico</h3>
-          <p>Análisis bíblico profundo, cuestionarios teológicos y lecciones maestras.</p>
-          <div class="status-badge">Espada de la Palabra</div>
+          <div class="card-icon">🦅</div>
+          <h3>Ascenso</h3>
+          <p>Créditos acumulados en liderazgo, méritos y análisis bíblico profundo.</p>
+          <div class="status-badge" routerLink="/seguidores/ascenso" style="cursor: pointer;">
+            Registrar Ascenso
+          </div>
         </div>
       </div>
     }
 
-    @else if (grupoUsuario === 'EXPLORADORES') {
+   @else if (grupoUsuario === 'EXPLORADORES') {
       <div class="welcome-banner exploradores">
         <h2>Módulo de Exploradores</h2>
-        <p>Misión de reconocimiento activa. Analiza los desafíos del terreno, mapas de supervivencia y reportes de campo.</p>
+        <p>BIENVENIDO!</p>
       </div>
 
       <div class="modules-grid">
         <div class="grid-card">
           <div class="card-icon">🗺️</div>
           <h3>Asistencia</h3>
-          <p>Reportes de campo y registro de misiones de reconocimiento activas en el terreno.</p>
-          <div class="status-badge">Reporte de Campo</div>
+          <p>Registro de Asistencia de los muchachos.</p>
+          <div class="status-badge" routerLink="/exploradores/asistencia" style="cursor: pointer;">
+            Registrar Asistencia
+          </div>
         </div>
+
+        <div class="grid-card"> 
+          <div class="card-icon">➕</div>
+          <h3>Ingreso de Muchachos</h3>
+          <p>Dar de alta nuevos muchachos en la base de datos de Firestore.</p>
+          <div class="status-badge" routerLink="/exploradores/registro" style="cursor: pointer;">
+            Administrar Lista
+          </div>
+        </div>
+
         <div class="grid-card">
           <div class="card-icon">🦅</div>
-          <h3>Premio de Destreza</h3>
-          <p>Evaluación de rastreo, supervivencia avanzada, cartografía y primeros auxilios de combate.</p>
-          <div class="status-badge">Altos Honores</div>
-        </div>
-        <div class="grid-card">
-          <div class="card-icon">🔥</div>
-          <h3>Reto Espiritual</h3>
-          <p>Desafíos devocionales avanzados, lecturas de liderazgo y servicio comunitario obligatorio.</p>
-          <div class="status-badge">Misión Espiritual</div>
+          <h3>Ascenso</h3>
+          <p>Evaluación de premios de destrezas y desafíos devocionales avanzados.</p>
+          <div class="status-badge" routerLink="/exploradores/ascenso" style="cursor: pointer;">
+            Registrar Ascenso
+          </div>
         </div>
       </div>
     }
-
     @else {
       <div class="panel-card error-panel">
         <h2>⚠️ Estado de Cuenta Indefinido</h2>
