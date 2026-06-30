@@ -1,0 +1,82 @@
+<div class="registro-container">
+  <div class="header-actions">
+    <button class="btn-back" routerLink="/dashboard">⬅️ Volver al Panel</button>
+  </div>
+
+  <div class="registro-card">
+    <div class="registro-header">
+      <h2> Ingreso de Muchachos (Base de Datos Central)</h2>
+      <p>Completa la ficha para registrar un nuevo muchacho en el sistema 14-TRACK.</p>
+    </div>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Nombre Completo del Muchacho:</label>
+        <input type="text" [(ngModel)]="nuevoNombre" placeholder="Ej. Kenneth Caballero" class="form-input">
+      </div>
+
+      <div class="form-group">
+        <label>Grupo / Sección:</label>
+        <select [(ngModel)]="nuevoGrupo" class="form-input">
+          <option value="NAVEGANTES">Navegantes</option>
+          <option value="PIONEROS">Pioneros</option>
+          <option value="EXPLORADORES">Exploradores</option>
+          <option value="SEGUIDORES">Seguidores</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Patrulla / cargo:</label>
+        <select [(ngModel)]="nuevaPatrulla" class="form-input">
+          <option value="ÁGUILAS">Águilas</option>
+          <option value="LOBOS">Lobos</option>
+          <option value="JAGUARES">Jaguares</option>
+          <option value="FLOTA DELTA">Flota Delta</option>
+          <option value="FLOTA DELTA">Guia Mayor</option>
+          <option value="FLOTA DELTA">Guia Mayor Auxiliar</option>
+          <option value="FLOTA DELTA">Capellan Auxiliar</option>         
+          <option value="SIN PATRULLA">Sin Patrulla (General)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Ruta de la Foto (Opcional):</label>
+        <input type="text" [(ngModel)]="nuevoAvatar" placeholder="boys/default.png" class="form-input">
+      </div>
+
+      <div class="form-group btn-container">
+        <button class="btn-submit" (click)="registrarMuchacho()">💾 Guardar muchacho</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="registro-card" style="margin-top: 2rem;">
+    <h3>📋 Muchachos Registrados en el Sistema</h3>
+    <div class="tabla-scroll">
+      <table class="muchachos-table">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Grupo</th>
+            <th>Patrulla</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (m of muchachos; track m.id) {
+            <tr>
+              <td>{{ m.nombre }}</td>
+              <td><span class="badge-patrulla" style="color: #ff0000;">{{ m.grupo }}</span></td>
+              <td><span class="badge-patrulla">{{ m.patrulla }}</span></td>
+              <td><button class="btn-delete" (click)="eliminarMuchacho(m.id)">❌</button></td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="4" style="text-align: center; color: #666; padding: 1.5rem;">Cargando base de datos o sin registros...</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

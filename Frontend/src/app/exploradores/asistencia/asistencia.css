@@ -1,0 +1,206 @@
+.asistencia-container {
+  min-height: 100vh;
+  background-color: #121212;
+  color: #ffffff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 2rem;
+}
+
+.header-actions {
+  margin-bottom: 1.5rem;
+}
+
+.btn-back {
+  background-color: #1a1a1a;
+  border: 1px solid #333;
+  color: #fff;
+  padding: 0.6rem 1.2rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-back:hover {
+  border-color: #ff0000;
+  background-color: #1e1e1e;
+}
+
+.asistencia-card {
+  background-color: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+
+.asistencia-header h2 {
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+  color: #ff0000;
+}
+
+.asistencia-header p {
+  color: #aaa;
+  margin-bottom: 2rem;
+}
+
+/* Filtros */
+.asistencia-filters {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  background-color: #1e1e1e;
+  padding: 1.5rem;
+  border-radius: 6px;
+  border: 1px solid #333;
+  margin-bottom: 2rem;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.filter-group label {
+  color: #ccc;
+  font-size: 0.9rem;
+}
+
+.input-date {
+  background-color: #121212;
+  border: 1px solid #444;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  outline: none;
+}
+
+.input-date:focus {
+  border-color: #ff0000;
+}
+
+.btn-guardar {
+  background-color: #ff0000;
+  color: white;
+  border: none;
+  padding: 0.7rem 1.5rem;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-guardar:hover {
+  background-color: #cc0000;
+}
+
+/* Tabla */
+.table-responsive {
+  overflow-x: auto;
+}
+
+.asistencia-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.asistencia-table th {
+  background-color: #121212;
+  color: #ff0000;
+  padding: 1rem;
+  font-weight: bold;
+  border-bottom: 2px solid #333;
+}
+
+.asistencia-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.user-cell {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.avatar {
+  font-size: 1.8rem;
+  background: #2a2a2a;
+  padding: 5px;
+  border-radius: 50%;
+}
+
+.user-cell .name {
+  font-weight: bold;
+  margin: 0;
+}
+
+.user-cell .role {
+  font-size: 0.85rem;
+  color: #888;
+  margin: 0;
+}
+
+/* El Switch (Toggle) */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+}
+
+.switch input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #333;
+  transition: .3s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 16px; width: 16px;
+  left: 4px; bottom: 4px;
+  background-color: white;
+  transition: .3s;
+}
+
+input:checked + .slider {
+  background-color: #046920; /* Verde cuando asiste */
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+.slider.round {
+  border-radius: 24px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+.avatar-img {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;         /* Esto la hace completamente circular */
+  object-fit: cover;          /* Recorta la imagen centrándola sin deformarla */
+  border: 2px solid #333333;  /* Un pequeño borde sutil para que resalte */
+  background-color: #2a2a2a;  /* Fondo oscuro por si la imagen tarda en cargar */
+}
+
+ efecto de brillo rojo sutil al pasar el mouse sobre la foto */
+.avatar-img:hover {
+  border-color: #ff0000;
+  transform: scale(1.05);
+  transition: all 0.2s ease;
+}
