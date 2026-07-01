@@ -1,144 +1,191 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterLink, Router } from '@angular/router';
+import { Component, OnInit, Inject, PLATFORM_ID, ChangeDetectorRef } from '@angular/core'; // <- Agregamos ChangeDetectorRef
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { initializeApp, getApps, getApp } from 'firebase/app';
-import { getFirestore, collection, getDocs, doc, updateDoc } from 'firebase/firestore';
-import { firebaseConfig } from '../../firebase.config'; // 👈 CORREGIDO: Ruta corregida (dos niveles arriba)
+import { RouterModule } from '@angular/router';
+
+import { getApp, getApps } from 'firebase/app';
+import { 
+  getFirestore, 
+  collection, 
+  getDocs, 
+  doc, 
+  setDoc,
+  DocumentData,
+  QueryDocumentSnapshot,
+  Firestore
+} from 'firebase/firestore';
 
 @Component({
   selector: 'app-ascenso',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule],
-  templateUrl: './ascenso.html',    
-  styleUrl: './ascenso.css'
+  imports: [CommonModule, FormsModule, RouterModule],
+  templateUrl: './ascenso.html',
+  styleUrls: ['./ascenso.css']
 })
 export class AscensoComponent implements OnInit {
-  grupoActual: string = 'EXPLORADORES';
-  coleccionGrupo: string = 'exploradores_lista';
-  muchachos: any[] = [];
-  
+  grupoActual: string = 'EXPLORADORES'; 
+  menuAbierto: boolean = false;
+  cargando: boolean = false;
+
+  muchachos: any[] = []; 
   premiosDestreza: any[] = [];
   liderazgoColumnas: any[] = [];
+  estudiosBiblicos: any[] = [];
 
-  private db: any;
+  private firestore!: Firestore;
 
-  constructor(private cdr: ChangeDetectorRef, private router: Router) {
-    const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
-    this.db = getFirestore(app);
-  }
+  // Inyectamos el detector de cambios en el constructor
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private cdr: ChangeDetectorRef 
+  ) { }
 
-  ngOnInit() {
-    this.detectarGrupoYColeccion();
-    this.configurarColumnasPorGrupo();
-    this.obtenerMuchachosAscenso();
-  }
-
-  detectarGrupoYColeccion() {
-    const urlActual = this.router.url;
-    if (urlActual.includes('navegantes')) {
-      this.grupoActual = 'NAVEGANTES';
-      this.coleccionGrupo = 'navegantes_lista';
-    } else if (urlActual.includes('pioneros')) {
-      this.grupoActual = 'PIONEROS';
-      this.coleccionGrupo = 'pioneros_lista';
-    } else if (urlActual.includes('seguidores')) {
-      this.grupoActual = 'SEGUIDORES';
-      this.coleccionGrupo = 'seguidores_lista';
-    } else {
-      this.grupoActual = 'EXPLORADORES';
-      this.coleccionGrupo = 'exploradores_lista';
+  ngOnInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      this.inicializarConexionFirebase();
     }
   }
 
-  configurarColumnasPorGrupo() {
-    if (this.grupoActual === 'NAVEGANTES') {
-      this.premiosDestreza = [
-        { id: 'ruta_promesa', label: 'Ruta de la Promesa' },
-        { id: 'parche_timon', label: 'Parche del Timón' },
-        { id: 'parche_ancla', label: 'Parche del Ancla' },
-        { id: 'esp_nautica_1', label: 'Marinería Básica' }
-      ];
-      this.liderazgoColumnas = [
-        { id: 'grumete', label: 'Grumete' },
-        { id: 'marinero', label: 'Marinero' },
-        { id: 'suboficial', label: 'Suboficial' }
-      ];
-    } 
-    else if (this.grupoActual === 'PIONEROS') {
-      this.premiosDestreza = [
-        { id: 'herramientas', label: 'Herramientas de Campo' },
-        { id: 'brujula', label: 'Uso de Brújula' },
-        { id: 'campamento_base', label: 'Campamento Base' },
-        { id: 'supervivencia', label: 'Supervivencia Básica' }
-      ];
-      this.liderazgoColumnas = [
-        { id: 'pionero_verde', label: 'Senda Verde' },
-        { id: 'pionero_azul', label: 'Senda Azul' },
-        { id: 'pionero_roja', label: 'Senda Roja' }
-      ];
-    } 
-    else if (this.grupoActual === 'SEGUIDORES') {
-      this.premiosDestreza = [
-        { id: 'analisis_biblico', label: 'Análisis Bíblico' },
-        { id: 'meritos_oro', label: 'Méritos de Oro' },
-        { id: 'servicio_comunitario', label: 'Servicio Comunitario' },
-        { id: 'academia_lideres', label: 'Academia de Líderes' }
-      ];
-      this.liderazgoColumnas = [
-        { id: 'guia_mayor', label: 'Guía Mayor' },
-        { id: 'lider_mariscal', label: 'Líder Mariscal' }
-      ];
-    } 
-    else {
-      this.premiosDestreza = [
-        { id: 'fundamentales', label: 'Habilidades Fundamentales' },
-        { id: 'ciudadania', label: 'Ciudadanía' },
-        { id: 'presupuestos', label: 'Presupuestos y Finanzas' },
-        { id: 'electricidad', label: 'Electricidad' },
-        { id: 'kayak', label: 'Navegando en Kayak' }
-      ];
-      this.liderazgoColumnas = [
-        { id: 'Liderazgo201', label: 'LIDERAZGO 201' },
-        { id: 'Liderazgo202', label: 'LIDERAZGO 202' },
-        { id: 'Liderazgo203', label: 'LIDERAZGO 203' },
-        { id: 'Liderazgo301', label: 'LIDERAZGO 301' }
-      ];
-    }
-  }
-
-  async obtenerMuchachosAscenso() {
+  private inicializarConexionFirebase() {
     try {
-      const querySnapshot = await getDocs(collection(this.db, this.coleccionGrupo));
-      this.muchachos = [];
+      if (getApps().length > 0) {
+        this.firestore = getFirestore(getApp());
+        this.cargarMuchachosDesdeFirebase();
+      } else {
+        setTimeout(() => {
+          if (getApps().length > 0) {
+            this.firestore = getFirestore(getApp());
+            this.cargarMuchachosDesdeFirebase();
+          }
+        }, 150);
+      }
+    } catch (error) {
+      console.error("❌ Error al obtener el puente de Firestore:", error);
+    }
+  }
+
+  async cargarMuchachosDesdeFirebase() {
+    if (!this.firestore) return;
+    
+    try {
+      const muchachosRef = collection(this.firestore, 'exploradores_lista');
+      const querySnapshot = await getDocs(muchachosRef);
       
-      querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        this.muchachos.push({
-          id: doc.id,
-          nombre: data['nombre'],    // 👈 CORREGIDO: Acceso con corchetes
-          patrulla: data['patrulla'],// 👈 CORREGIDO: Acceso con corchetes
-          ascenso: data['ascenso'] || {} // 👈 CORREGIDO: Acceso con corchetes
-        });
+      const listaTemporal = querySnapshot.docs.map((documento: QueryDocumentSnapshot<DocumentData>) => {
+        const datos = documento.data();
+        return {
+          id: documento.id,
+          nombre: datos['nombre'], 
+          grupoDb: datos['grupo'],
+          ascenso: datos['ascenso'] || {} 
+        };
       });
 
-      this.muchachos.sort((a, b) => (a.patrulla || '').localeCompare(b.patrulla || '') || a.nombre.localeCompare(b.nombre));
-    } catch (e) {
-      console.error("Error al traer muchachos: ", e);
+      // Filtramos
+      this.muchachos = listaTemporal.filter(m => {
+        return m.grupoDb?.toString().trim().toUpperCase() === this.grupoActual.toUpperCase();
+      });
+
+      // Reconstruimos las columnas
+      const destrezaSet = new Set<string>();
+      const liderazgoSet = new Set<string>();
+      const biblicoSet = new Set<string>();
+
+      this.muchachos.forEach(muchacho => {
+        if (muchacho.ascenso) {
+          Object.keys(muchacho.ascenso).forEach(parcheId => {
+            if (
+              parcheId.startsWith('destreza_') || 
+              parcheId.includes('_6792') || 
+              parcheId.includes('_4808') || 
+              parcheId.includes('_0968')
+            ) {
+              destrezaSet.add(parcheId);
+            } else if (parcheId.startsWith('liderazgo_')) {
+              liderazgoSet.add(parcheId);
+            } else {
+              biblicoSet.add(parcheId);
+            }
+          });
+        }
+      });
+
+      this.premiosDestreza = Array.from(destrezaSet).map(id => ({
+        id,
+        label: id.split('_')[0].toUpperCase()
+      }));
+
+      this.liderazgoColumnas = Array.from(liderazgoSet).map(id => ({
+        id,
+        label: id.split('_')[0].toUpperCase()
+      }));
+
+      this.estudiosBiblicos = Array.from(biblicoSet).map(id => ({
+        id,
+        label: id.split('_')[0].toUpperCase()
+      }));
+
+      // 🔥 ¡ESTA ES LA MAGIA! Le decimos a Angular que pinte los cambios YA mismo
+      this.cdr.detectChanges();
+
+    } catch (error) {
+      console.error('❌ ERROR CRÍTICO DE FIRESTORE:', error);
+    }
+  }
+
+  async guardarCambiosEnBaseDatos() {
+    if (!this.firestore) return;
+    if (this.muchachos.length === 0) {
+      alert('No hay muchachos en la lista para guardar.');
+      return;
+    }
+
+    this.cargando = true;
+    this.cdr.detectChanges();
+
+    try {
+      for (const muchacho of this.muchachos) {
+        const muchachoDocRef = doc(this.firestore, 'exploradores_lista', muchacho.id);
+        
+        // Creamos un clon limpio para enviar a Firebase sin la propiedad local grupoDb
+        const { grupoDb, ...datosAEnviar } = muchacho;
+
+        await setDoc(muchachoDocRef, {
+          ascenso: datosAEnviar.ascenso,
+          ultimaActualizacionAscenso: new Date()
+        }, { merge: true });
+      }
+      alert('¡Progreso de ascenso guardado exitosamente en Firebase!');
+    } catch (error) {
+      console.error('❌ Error al persistir cambios en la nube:', error);
+      alert('Hubo un error al intentar guardar los cambios en la nube.');
     } finally {
+      this.cargando = false;
       this.cdr.detectChanges();
     }
   }
 
-  async guardarProgreso(muchacho: any) {
-    try {
-      const docRef = doc(this.db, this.coleccionGrupo, muchacho.id);
-      await updateDoc(docRef, {
-        ascenso: muchacho.ascenso
-      });
-      console.log(`Progreso guardado en la nube para ${muchacho.nombre}`);
-    } catch (error) {
-      console.error("Error actualizando ascenso: ", error);
-    }
+  agregarColumna(tipo: string) {
+    const nombreParche = prompt(`Introduce el nombre del nuevo ${tipo}:`);
+    if (!nombreParche) return;
+
+    const idNuevo = `${tipo.toLowerCase()}_${Date.now()}`;
+    const nuevaCol = { id: idNuevo, label: nombreParche.toUpperCase() };
+
+    if (tipo === 'destreza') this.premiosDestreza.push(nuevaCol);
+    if (tipo === 'liderazgo') this.liderazgoColumnas.push(nuevaCol);
+    if (tipo === 'biblico') this.estudiosBiblicos.push(nuevaCol);
+    
+    this.cdr.detectChanges();
+  }
+
+  eliminarColumna(id: string, tipo: string, label: string) {
+    if (!confirm(`¿Seguro que deseas eliminar la columna "${label}"?`)) return;
+
+    if (tipo === 'destreza') this.premiosDestreza = this.premiosDestreza.filter(c => c.id !== id);
+    if (tipo === 'liderazgo') this.liderazgoColumnas = this.liderazgoColumnas.filter(c => c.id !== id);
+    if (tipo === 'biblico') this.estudiosBiblicos = this.estudiosBiblicos.filter(c => c.id !== id);
+    
+    this.cdr.detectChanges();
   }
 }
