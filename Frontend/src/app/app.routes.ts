@@ -10,24 +10,12 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'dashboard', component: DashboardComponent },
   
-  // NAVEGANTES
-  { path: 'navegantes/asistencia', component: AsistenciaComponent },
-  { path: 'navegantes/registro', component: RegistroComponent },
+  // RUTA DINÁMICA DE ASCENSO (El ':grupo' captura el segmento de la URL)
+  // Ejemplos que funcionarán con esta única línea:
+  // /navegantes/ascenso, /pioneros/ascenso, /seguidores/ascenso, /exploradores/ascenso
+  { path: ':grupo/ascenso', component: AscensoComponent },
 
-  // PIONEROS
-  { path: 'pioneros/asistencia', component: AsistenciaComponent },
-  { path: 'pioneros/registro', component: RegistroComponent },
-
-  // SEGUIDORES
-  { path: 'seguidores/asistencia', component: AsistenciaComponent },
-  { path: 'seguidores/registro', component: RegistroComponent },
-
-  // EXPLORADORES
-  { path: 'exploradores/asistencia', component: AsistenciaComponent },
-  { path: 'exploradores/registro', component: RegistroComponent },
-
-  { path: 'navegantes/ascenso', component: AscensoComponent },
-{ path: 'pioneros/ascenso', component: AscensoComponent },
-{ path: 'seguidores/ascenso', component: AscensoComponent },
-{ path: 'exploradores/ascenso', component: AscensoComponent },
+  // RUTAS DE ASISTENCIA Y REGISTRO (Si quieres hacerlas dinámicas también)
+  { path: ':grupo/asistencia', component: AsistenciaComponent },
+  { path: ':grupo/registro', component: RegistroComponent },
 ];

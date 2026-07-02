@@ -1,33 +1,22 @@
-<!-- La clase dinámica en el contenedor permite cambiar estilos globales (como bordes o acentos) según el grupo -->
 <div class="ascenso-container" [ngClass]="grupoActual?.toLowerCase()">
   
-  <!-- Encabezado del Módulo con Menú Desplegable y Botón Guardar -->
   <header class="ascenso-header">
     <div class="header-info">
       <button class="btn-back" routerLink="/dashboard">⬅ Volver al Dashboard</button>
       
-      <!-- El badge cambia de color automáticamente (ej: badge-exploradores, badge-pioneros, etc.) -->
       <h2>Control de Ascenso: 
         <span class="badge-grupo" [ngClass]="'badge-' + grupoActual?.toLowerCase()">
           {{ grupoActual }}
         </span>
       </h2>
-      <p>Modifica los parches de los muchachos y presiona Guardar al finalizar.</p>
+      <p>Modifica el Ascenso de los muchachos y presiona Guardar al finalizar.</p>
     </div>
 
-    <!-- Acciones del Encabezado (Arriba a la derecha) -->
     <div class="header-actions">
-      
-      <!-- BOTÓN DE GUARDAR (Estilizado igual al de añadir) -->
       <button class="btn-toggle-menu btn-guardar-estilo" (click)="guardarCambiosEnBaseDatos()" [disabled]="cargando">
-        @if (cargando) {
-          ⏳ Guardando...
-        } @else {
-          💾 Guardar Cambios
-        }
+        @if (cargando) { ⏳ Guardando... } @else { 💾 Guardar Cambios }
       </button>
 
-      <!-- Botón Único de Añadir Columna -->
       <div class="menu-columnas-container">
         <button class="btn-toggle-menu" (click)="menuAbierto = !menuAbierto">
           ⚙️ Añadir Columna ▾
@@ -50,28 +39,18 @@
     </div>
   </header>
 
-  <!-- Tabla de Control de Ascensos Limpia -->
   <div class="table-responsive">
     <table class="ascenso-table">
       <thead>
         <tr>
-          <!-- Solo la columna de Muchacho fija a la izquierda ocupando ambas filas -->
           <th rowspan="2" class="col-fija-header">Muchacho</th>
-          
-          <th [attr.colspan]="premiosDestreza.length || 1" class="th-categoria destreza-header">
-            Premios de Destreza
-          </th>
-          
-          <th [attr.colspan]="liderazgoColumnas.length || 1" class="th-categoria liderazgo-header">
-            Premios de Liderazgo
-          </th>
-
+          <th [attr.colspan]="premiosDestreza.length || 1" class="th-categoria destreza-header">Premios de Destreza</th>
+          <th [attr.colspan]="liderazgoColumnas.length || 1" class="th-categoria liderazgo-header">Premios de Liderazgo</th>
           <th [attr.colspan]="estudiosBiblicos.length || 1" class="th-categoria biblico-header">
             {{ grupoActual === 'EXPLORADORES' ? 'Retos Espirituales' : 'Estudios Bíblicos' }}
           </th>
         </tr>
         <tr>
-          <!-- Subcabeceras Dinámicas: Destreza -->
           @for (col of premiosDestreza; track col.id) {
             <th class="col-destreza col-dinamica">
               <span class="txt-premio">{{ col.label }}</span>
@@ -79,7 +58,6 @@
             </th>
           } @empty { <th class="no-data-col">Sin premios</th> }
           
-          <!-- Subcabeceras Dinámicas: Liderazgo -->
           @for (col of liderazgoColumnas; track col.id) {
             <th class="col-liderazgo col-dinamica">
               <span class="txt-premio">{{ col.label }}</span>
@@ -87,7 +65,6 @@
             </th>
           } @empty { <th class="no-data-col">Sin liderazgo</th> }
 
-          <!-- Subcabeceras Dinámicas: Bíblico -->
           @for (col of estudiosBiblicos; track col.id) {
             <th class="col-biblico col-dinamica">
               <span class="txt-premio">{{ col.label }}</span>
@@ -101,40 +78,28 @@
           <tr>
             <td class="muchacho-nombre"><strong>{{ muchacho.nombre }}</strong></td>
 
-            <!-- Checkboxes Dinámicos: Grupo Destreza -->
             @for (col of premiosDestreza; track col.id) {
               <td class="text-center">
-                <label class="checkbox-container">
-                  <input type="checkbox" [(ngModel)]="muchacho.ascenso[col.id]">
-                  <span class="checkmark"></span>
-                </label>
+                <input type="checkbox" [(ngModel)]="muchacho.ascenso[col.id]">
               </td>
             } @empty { <td class="text-center text-muted">-</td> }
 
-            <!-- Checkboxes Dinámicos: Grupo Liderazgo -->
             @for (col of liderazgoColumnas; track col.id) {
               <td class="text-center">
-                <label class="checkbox-container">
-                  <input type="checkbox" [(ngModel)]="muchacho.ascenso[col.id]">
-                  <span class="checkmark-liderazgo"></span>
-                </label>
+                <input type="checkbox" [(ngModel)]="muchacho.ascenso[col.id]">
               </td>
             } @empty { <td class="text-center text-muted">-</td> }
 
-            <!-- Checkboxes Dinámicos: Grupo Estudios Bíblicos -->
             @for (col of estudiosBiblicos; track col.id) {
               <td class="text-center">
-                <label class="checkbox-container">
-                  <input type="checkbox" [(ngModel)]="muchacho.ascenso[col.id]">
-                  <span class="checkmark-biblico"></span>
-                </label>
+                <input type="checkbox" [(ngModel)]="muchacho.ascenso[col.id]">
               </td>
             } @empty { <td class="text-center text-muted">-</td> }
           </tr>
         } @empty {
           <tr>
             <td [attr.colspan]="1 + (premiosDestreza.length || 1) + (liderazgoColumnas.length || 1) + (estudiosBiblicos.length || 1)" class="text-center no-data">
-              No se encontraron muchachos registrados en la lista de {{ grupoActual?.toLowerCase() }}.
+              No se encontraron muchachos registrados en el grupo de {{ grupoActual | titlecase }}.
             </td>
           </tr>
         }

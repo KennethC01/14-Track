@@ -1,7 +1,7 @@
-import { Component, OnInit, Inject, PLATFORM_ID, ChangeDetectorRef } from '@angular/core'; // <- Agregamos ChangeDetectorRef
+import { Component, OnInit, Inject, PLATFORM_ID, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { RouterModule, ActivatedRoute } from '@angular/router';
 
 import { getApp, getApps } from 'firebase/app';
 import { 
@@ -10,6 +10,7 @@ import {
   getDocs, 
   doc, 
   setDoc,
+  getDoc,
   DocumentData,
   QueryDocumentSnapshot,
   Firestore
@@ -23,7 +24,7 @@ import {
   styleUrls: ['./ascenso.css']
 })
 export class AscensoComponent implements OnInit {
-  grupoActual: string = 'EXPLORADORES'; 
+  grupoActual: string = ''; 
   menuAbierto: boolean = false;
   cargando: boolean = false;
 
@@ -34,158 +35,127 @@ export class AscensoComponent implements OnInit {
 
   private firestore!: Firestore;
 
-  // Inyectamos el detector de cambios en el constructor
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
-    private cdr: ChangeDetectorRef 
+    private cdr: ChangeDetectorRef,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      this.inicializarConexionFirebase();
-    }
+    // Escucha cambios en la ruta para saber qué grupo cargar
+    this.route.params.subscribe(params => {
+      this.grupoActual = params['grupo']?.toUpperCase() || 'EXPLORADORES';
+      if (isPlatformBrowser(this.platformId)) {
+        this.inicializarConexionFirebase();
+      }
+    });
   }
 
   private inicializarConexionFirebase() {
     try {
       if (getApps().length > 0) {
         this.firestore = getFirestore(getApp());
-        this.cargarMuchachosDesdeFirebase();
-      } else {
-        setTimeout(() => {
-          if (getApps().length > 0) {
-            this.firestore = getFirestore(getApp());
-            this.cargarMuchachosDesdeFirebase();
-          }
-        }, 150);
+        this.cargarDatos();
       }
     } catch (error) {
-      console.error("❌ Error al obtener el puente de Firestore:", error);
+      console.error("❌ Error al inicializar Firebase:", error);
     }
   }
 
-  async cargarMuchachosDesdeFirebase() {
+  async cargarDatos() {
     if (!this.firestore) return;
     
     try {
-      const muchachosRef = collection(this.firestore, 'exploradores_lista');
+      // 1. Cargar configuración dinámica específica de este grupo
+      const configRef = doc(this.firestore, 'configuracion_columnas', this.grupoActual.toUpperCase());
+      const configSnap = await getDoc(configRef);
+      
+      if (configSnap.exists()) {
+        const data = configSnap.data();
+        this.premiosDestreza = data['premiosDestreza'] || [];
+        this.liderazgoColumnas = data['liderazgoColumnas'] || [];
+        this.estudiosBiblicos = data['estudiosBiblicos'] || [];
+      } else {
+        // Reset si no hay config
+        this.premiosDestreza = [];
+        this.liderazgoColumnas = [];
+        this.estudiosBiblicos = [];
+      }
+
+      // 2. Cargar muchachos de su colección única (ej: pioneros_lista)
+      const nombreColeccion = `${this.grupoActual.toLowerCase()}_lista`;
+      const muchachosRef = collection(this.firestore, nombreColeccion);
       const querySnapshot = await getDocs(muchachosRef);
       
-      const listaTemporal = querySnapshot.docs.map((documento: QueryDocumentSnapshot<DocumentData>) => {
-        const datos = documento.data();
+      this.muchachos = querySnapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => {
+        const datos = doc.data();
         return {
-          id: documento.id,
-          nombre: datos['nombre'], 
-          grupoDb: datos['grupo'],
+          id: doc.id,
+          nombre: datos['nombre'],
           ascenso: datos['ascenso'] || {} 
         };
       });
 
-      // Filtramos
-      this.muchachos = listaTemporal.filter(m => {
-        return m.grupoDb?.toString().trim().toUpperCase() === this.grupoActual.toUpperCase();
-      });
-
-      // Reconstruimos las columnas
-      const destrezaSet = new Set<string>();
-      const liderazgoSet = new Set<string>();
-      const biblicoSet = new Set<string>();
-
-      this.muchachos.forEach(muchacho => {
-        if (muchacho.ascenso) {
-          Object.keys(muchacho.ascenso).forEach(parcheId => {
-            if (
-              parcheId.startsWith('destreza_') || 
-              parcheId.includes('_6792') || 
-              parcheId.includes('_4808') || 
-              parcheId.includes('_0968')
-            ) {
-              destrezaSet.add(parcheId);
-            } else if (parcheId.startsWith('liderazgo_')) {
-              liderazgoSet.add(parcheId);
-            } else {
-              biblicoSet.add(parcheId);
-            }
-          });
-        }
-      });
-
-      this.premiosDestreza = Array.from(destrezaSet).map(id => ({
-        id,
-        label: id.split('_')[0].toUpperCase()
-      }));
-
-      this.liderazgoColumnas = Array.from(liderazgoSet).map(id => ({
-        id,
-        label: id.split('_')[0].toUpperCase()
-      }));
-
-      this.estudiosBiblicos = Array.from(biblicoSet).map(id => ({
-        id,
-        label: id.split('_')[0].toUpperCase()
-      }));
-
-      // 🔥 ¡ESTA ES LA MAGIA! Le decimos a Angular que pinte los cambios YA mismo
       this.cdr.detectChanges();
-
     } catch (error) {
-      console.error('❌ ERROR CRÍTICO DE FIRESTORE:', error);
+      console.error('❌ Error al cargar datos:', error);
     }
+  }
+
+  async guardarConfiguracionColumnas() {
+    const configRef = doc(this.firestore, 'configuracion_columnas', this.grupoActual.toUpperCase());
+    await setDoc(configRef, {
+      premiosDestreza: this.premiosDestreza,
+      liderazgoColumnas: this.liderazgoColumnas,
+      estudiosBiblicos: this.estudiosBiblicos
+    }, { merge: true });
   }
 
   async guardarCambiosEnBaseDatos() {
     if (!this.firestore) return;
-    if (this.muchachos.length === 0) {
-      alert('No hay muchachos en la lista para guardar.');
-      return;
-    }
-
     this.cargando = true;
-    this.cdr.detectChanges();
+    const nombreColeccion = `${this.grupoActual.toLowerCase()}_lista`;
 
     try {
       for (const muchacho of this.muchachos) {
-        const muchachoDocRef = doc(this.firestore, 'exploradores_lista', muchacho.id);
-        
-        // Creamos un clon limpio para enviar a Firebase sin la propiedad local grupoDb
-        const { grupoDb, ...datosAEnviar } = muchacho;
-
-        await setDoc(muchachoDocRef, {
-          ascenso: datosAEnviar.ascenso,
-          ultimaActualizacionAscenso: new Date()
+        const docRef = doc(this.firestore, nombreColeccion, muchacho.id);
+        await setDoc(docRef, { 
+          ascenso: muchacho.ascenso,
+          ultimaActualizacion: new Date() 
         }, { merge: true });
       }
-      alert('¡Progreso de ascenso guardado exitosamente en Firebase!');
+      alert(`Progreso de ${this.grupoActual} guardado exitosamente.`);
     } catch (error) {
-      console.error('❌ Error al persistir cambios en la nube:', error);
-      alert('Hubo un error al intentar guardar los cambios en la nube.');
+      console.error(error);
+      alert('Error al guardar en la base de datos.');
     } finally {
       this.cargando = false;
       this.cdr.detectChanges();
     }
   }
 
-  agregarColumna(tipo: string) {
-    const nombreParche = prompt(`Introduce el nombre del nuevo ${tipo}:`);
-    if (!nombreParche) return;
+  async agregarColumna(tipo: string) {
+    const nombre = prompt(`Nombre del nuevo ${tipo}:`);
+    if (!nombre) return;
 
-    const idNuevo = `${tipo.toLowerCase()}_${Date.now()}`;
-    const nuevaCol = { id: idNuevo, label: nombreParche.toUpperCase() };
+    const nuevaCol = { id: `${tipo}_${Date.now()}`, label: nombre.toUpperCase() };
 
     if (tipo === 'destreza') this.premiosDestreza.push(nuevaCol);
     if (tipo === 'liderazgo') this.liderazgoColumnas.push(nuevaCol);
     if (tipo === 'biblico') this.estudiosBiblicos.push(nuevaCol);
-    
+
+    await this.guardarConfiguracionColumnas();
     this.cdr.detectChanges();
   }
 
-  eliminarColumna(id: string, tipo: string, label: string) {
-    if (!confirm(`¿Seguro que deseas eliminar la columna "${label}"?`)) return;
+  async eliminarColumna(id: string, tipo: string, label: string) {
+    if (!confirm(`¿Eliminar la columna "${label}"?`)) return;
 
     if (tipo === 'destreza') this.premiosDestreza = this.premiosDestreza.filter(c => c.id !== id);
     if (tipo === 'liderazgo') this.liderazgoColumnas = this.liderazgoColumnas.filter(c => c.id !== id);
     if (tipo === 'biblico') this.estudiosBiblicos = this.estudiosBiblicos.filter(c => c.id !== id);
-    
+
+    await this.guardarConfiguracionColumnas();
     this.cdr.detectChanges();
   }
 }
