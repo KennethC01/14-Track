@@ -1,9 +1,9 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, Router } from '@angular/router'; // <-- Asegúrate de importar Router
+import { RouterLink, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { initializeApp, getApps, getApp } from 'firebase/app';
-import { getFirestore, collection, getDocs, addDoc } from 'firebase/firestore'; // Ajusta según tus imports de Firebase
+import { getFirestore, collection, getDocs, addDoc } from 'firebase/firestore';
 import { firebaseConfig } from '../../firebase.config';
 
 @Component({
@@ -15,13 +15,17 @@ import { firebaseConfig } from '../../firebase.config';
 })
 export class AsistenciaComponent implements OnInit {
   grupoActual: string = 'EXPLORADORES';
-  coleccionGrupo: string = 'exploradores_lista'; // <-- Colección de donde leerá los muchachos
+  coleccionGrupo: string = 'exploradores_lista';
   muchachos: any[] = [];
   private db: any;
 
+  // Propiedades para la vista
+  fechaReunion: string = '';
+  conteoAsistencia: number = 0;
+
   constructor(
     private cdr: ChangeDetectorRef,
-    private router: Router // <-- Inyectamos el Router
+    private router: Router
   ) {
     const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
     this.db = getFirestore(app);
@@ -35,7 +39,6 @@ export class AsistenciaComponent implements OnInit {
   detectarGrupoYColeccion() {
     const urlActual = this.router.url;
     
-    // Configuramos dinámicamente el grupo y la colección raíz según la URL activa
     if (urlActual.includes('navegantes')) {
       this.grupoActual = 'NAVEGANTES';
       this.coleccionGrupo = 'navegantes_lista';
@@ -53,30 +56,73 @@ export class AsistenciaComponent implements OnInit {
 
   async obtenerMuchachosParaAsistencia() {
     try {
-      // Lee directamente de la colección del grupo en el que estás navegando
       const querySnapshot = await getDocs(collection(this.db, this.coleccionGrupo));
-      this.muchachos = [];
       
+      // Recuperar estado previo del localStorage para que no se borre al recargar
+      const storageKey = 'asistencia_temporal_' + this.coleccionGrupo;
+      const guardadoLocal = localStorage.getItem(storageKey);
+      const estadosPrevios = guardadoLocal ? JSON.parse(guardadoLocal) : {};
+
+      this.muchachos = [];
       querySnapshot.forEach((doc) => {
-        // Estructura los muchachos agregando una propiedad por defecto para el check de asistencia si lo usas
-        this.muchachos.push({ id: doc.id, ...doc.data(), asistio: false });
+        this.muchachos.push({ 
+          id: doc.id, 
+          ...doc.data(), 
+          asistio: estadosPrevios[doc.id] || false 
+        });
       });
 
-      // Ordenar por patrulla y luego por nombre
+      this.actualizarConteo(); 
+
       this.muchachos.sort((a, b) => 
         (a.patrulla || '').localeCompare(b.patrulla || '') || a.nombre.localeCompare(b.nombre)
       );
-
     } catch (e) {
-      console.error("Error al obtener muchachos para asistencia:", e);
+      console.error("Error al obtener muchachos:", e);
     } finally {
       this.cdr.detectChanges();
     }
   }
 
-  // Si guardas el historial de asistencia en otra colección (ej: asistencia_historial)
+  actualizarConteo() {
+    this.conteoAsistencia = this.muchachos.filter(m => m.asistio).length;
+    
+    // Persistencia: Guardar el estado de los checks en localStorage
+    const estadoActual: any = {};
+    this.muchachos.forEach(m => estadoActual[m.id] = m.asistio);
+    localStorage.setItem('asistencia_temporal_' + this.coleccionGrupo, JSON.stringify(estadoActual));
+  }
+
   async guardarAsistencia() {
-    // Tu lógica actual para guardar la asistencia...
-    // Puedes usar la variable `this.grupoActual` o `this.coleccionGrupo` si necesitas etiquetar el reporte.
+    if (!this.fechaReunion) {
+      alert("Por favor, selecciona una fecha antes de guardar.");
+      return;
+    }
+
+    try {
+      const asistieron = this.muchachos.filter(m => m.asistio);
+      
+      // Guardado dinámico en colecciones separadas: ej: asistencia_exploradores
+      const nombreColeccion = `asistencia_${this.grupoActual.toLowerCase()}`;
+      
+      await addDoc(collection(this.db, nombreColeccion), {
+        fecha: this.fechaReunion,
+        totalAsistentes: this.conteoAsistencia,
+        listaAsistentes: asistieron.map(m => ({ nombre: m.nombre, id: m.id }))
+      });
+
+      // Limpiar persistencia temporal tras guardar con éxito
+      localStorage.removeItem('asistencia_temporal_' + this.coleccionGrupo);
+      
+      alert(`Asistencia guardada correctamente en ${this.grupoActual}. Total: ${this.conteoAsistencia}`);
+      
+      // Resetear formulario
+      this.fechaReunion = '';
+      this.obtenerMuchachosParaAsistencia(); 
+      
+    } catch (e) {
+      console.error("Error al guardar la asistencia:", e);
+      alert("Hubo un error al guardar en la base de datos.");
+    }
   }
 }

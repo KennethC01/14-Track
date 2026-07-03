@@ -6,13 +6,14 @@
   <div class="asistencia-card">
     <div class="asistencia-header">
       <h2>🗺️ Registro de Asistencia - {{ grupoActual | titlecase }}</h2>
+      <h3 style="color: #ffffff;">Asistentes seleccionados: {{ conteoAsistencia }}</h3>
       <p>Selecciona la fecha y marca la asistencia de los muchachos para la reunión semanal.</p>
     </div>
 
     <div class="asistencia-filters">
       <div class="filter-group">
         <label for="fecha">Fecha de la Reunión:</label>
-        <input type="date" id="fecha" class="input-date">
+        <input type="date" id="fecha" class="input-date" [(ngModel)]="fechaReunion">
       </div>
       <button class="btn-guardar" (click)="guardarAsistencia()">💾 Guardar Asistencia</button>
     </div>
@@ -41,7 +42,7 @@
               </td>
               <td>
                 <label class="switch">
-                  <input type="checkbox" [(ngModel)]="m.asistio">
+                  <input type="checkbox" [(ngModel)]="m.asistio" (change)="actualizarConteo()">
                   <span class="slider round"></span>
                 </label>
               </td>
@@ -56,6 +57,5 @@
         </tbody>
       </table>
     </div>
-
   </div>
 </div>
