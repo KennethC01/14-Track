@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink, Router, ActivatedRoute } from '@angular/router'; 
 import { FormsModule } from '@angular/forms';
 import { initializeApp, getApps, getApp } from 'firebase/app';
-import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from 'firebase/firestore';
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { firebaseConfig } from '../../firebase.config';
 
 @Component({
@@ -14,22 +14,27 @@ import { firebaseConfig } from '../../firebase.config';
   styleUrl: './registro.css'
 })
 export class RegistroComponent implements OnInit {
+  // Campos del formulario (Inicializados vacíos o con valores por defecto)
   nuevoNombre: string = '';
   nuevoGrupo: string = 'EXPLORADORES'; 
-  nuevaPatrulla: string = 'ÁGUILAS';
+  nuevaPatrulla: string = 'SIN PATRULLA';
   nuevoAvatar: string = 'boys/default.png';
+  nuevaIdentidad: string = '';
+  nuevoTelefono: string = '';
+  nuevoTipoSangre: string = 'O+';
+  nuevoNombrePadres: string = '';
+  nuevoTelefonoPadres: string = '';
+  nuevoInscrito: boolean = false;
   
-  // Esta variable definirá la colección correspondiente en Firestore
+  // Variables para Edición
+  muchachoEnEdicion: any = null; 
+  textoBoton: string = 'Registrar Muchacho';
+
   coleccionGrupo: string = 'exploradores_lista'; 
-  
   muchachosFiltrados: any[] = []; 
   private db: any;
 
-  constructor(
-    private cdr: ChangeDetectorRef,
-    private router: Router,          
-    private route: ActivatedRoute    
-  ) {
+  constructor(private cdr: ChangeDetectorRef, private router: Router, private route: ActivatedRoute) {
     const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
     this.db = getFirestore(app);
   }
@@ -41,72 +46,87 @@ export class RegistroComponent implements OnInit {
 
   detectarGrupoYColeccion() {
     const urlActual = this.router.url;
-    
-    // Configuramos el nombre del Grupo y el nombre exacto de la Colección en Firestore
     if (urlActual.includes('navegantes')) {
-      this.nuevoGrupo = 'NAVEGANTES';
-      this.coleccionGrupo = 'navegantes_lista';
+      this.nuevoGrupo = 'NAVEGANTES'; this.coleccionGrupo = 'navegantes_lista';
     } else if (urlActual.includes('pioneros')) {
-      this.nuevoGrupo = 'PIONEROS';
-      this.coleccionGrupo = 'pioneros_lista';
+      this.nuevoGrupo = 'PIONEROS'; this.coleccionGrupo = 'pioneros_lista';
     } else if (urlActual.includes('seguidores')) {
-      this.nuevoGrupo = 'SEGUIDORES';
-      this.coleccionGrupo = 'seguidores_lista';
+      this.nuevoGrupo = 'SEGUIDORES'; this.coleccionGrupo = 'seguidores_lista';
     } else {
-      this.nuevoGrupo = 'EXPLORADORES';
-      this.coleccionGrupo = 'exploradores_lista';
+      this.nuevoGrupo = 'EXPLORADORES'; this.coleccionGrupo = 'exploradores_lista';
     }
   }
 
   async obtenerMuchachos() {
     try {
-      // Ahora lee dinámicamente desde la colección correspondiente al grupo activo
       const querySnapshot = await getDocs(collection(this.db, this.coleccionGrupo));
-      this.muchachosFiltrados = [];
-      
-      querySnapshot.forEach((doc) => {
-        this.muchachosFiltrados.push({ id: doc.id, ...doc.data() });
-      });
-
-      // Ordenar por patrulla y luego por nombre
-      this.muchachosFiltrados.sort((a, b) => 
-        (a.patrulla || '').localeCompare(b.patrulla || '') || a.nombre.localeCompare(b.nombre)
-      );
-
+      this.muchachosFiltrados = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     } catch (e) {
-      console.error("Error al obtener muchachos:", e);
+      console.error("Error al obtener:", e);
     } finally {
       this.cdr.detectChanges();
     }
   }
 
+  prepararEdicion(m: any) {
+    this.muchachoEnEdicion = m;
+    // Asignamos valores garantizando que no sean undefined
+    this.nuevoNombre = m.nombre || '';
+    this.nuevaIdentidad = m.identidad || '';
+    this.nuevoTelefono = m.telefono || '';
+    this.nuevoTipoSangre = m.tipoSangre || 'O+';
+    this.nuevoNombrePadres = m.nombrePadres || '';
+    this.nuevoTelefonoPadres = m.telefonoPadres || '';
+    this.nuevoInscrito = !!m.inscrito;
+    this.nuevaPatrulla = m.patrulla || 'SIN PATRULLA';
+    this.textoBoton = 'Actualizar Muchacho';
+  }
+
   async registrarMuchacho() {
-    if (!this.nuevoNombre.trim()) {
-      alert("Por favor ingresa un nombre válido.");
-      return;
-    }
+    if (!this.nuevoNombre.trim()) return alert("El nombre es requerido");
+
+    // Construimos el objeto forzando valores para evitar el error de Firebase
+    const datosMuchacho = {
+      nombre: this.nuevoNombre,
+      grupo: this.nuevoGrupo,
+      patrulla: this.nuevaPatrulla,
+      avatar: this.nuevoAvatar,
+      identidad: this.nuevaIdentidad || '',
+      telefono: this.nuevoTelefono || '',
+      tipoSangre: this.nuevoTipoSangre || 'O+',
+      nombrePadres: this.nuevoNombrePadres || '',
+      telefonoPadres: this.nuevoTelefonoPadres || '',
+      inscrito: !!this.nuevoInscrito
+    };
 
     try {
-      const nuevoExplorador = {
-        nombre: this.nuevoNombre,
-        grupo: this.nuevoGrupo, 
-        patrulla: this.nuevaPatrulla,
-        avatar: this.nuevoAvatar
-      };
-
-      // Se guarda directamente en su propia colección independiente en Firebase
-      await addDoc(collection(this.db, this.coleccionGrupo), nuevoExplorador);
-      this.nuevoNombre = ''; 
-      alert(`¡Muchacho registrado con éxito en la colección: ${this.coleccionGrupo}!`);
-      this.obtenerMuchachos(); 
+      if (this.muchachoEnEdicion) {
+        const docRef = doc(this.db, this.coleccionGrupo, this.muchachoEnEdicion.id);
+        await updateDoc(docRef, datosMuchacho);
+      } else {
+        await addDoc(collection(this.db, this.coleccionGrupo), datosMuchacho);
+      }
+      this.limpiarFormulario();
+      this.obtenerMuchachos();
     } catch (error) {
       console.error("Error al guardar:", error);
+      alert("Error al guardar: asegúrate de que todos los campos tengan datos válidos.");
     }
   }
 
+  limpiarFormulario() {
+    this.muchachoEnEdicion = null;
+    this.textoBoton = 'Registrar Muchacho';
+    this.nuevoNombre = '';
+    this.nuevaIdentidad = '';
+    this.nuevoTelefono = '';
+    this.nuevoNombrePadres = '';
+    this.nuevoTelefonoPadres = '';
+    this.nuevoInscrito = false;
+  }
+
   async eliminarMuchacho(id: string) {
-    if (confirm("¿Seguro que deseas eliminar este registro?")) {
-      // Se elimina directamente de su colección correspondiente
+    if (confirm("¿Eliminar este registro?")) {
       await deleteDoc(doc(this.db, this.coleccionGrupo, id));
       this.obtenerMuchachos();
     }

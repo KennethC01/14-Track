@@ -6,19 +6,24 @@
       
       <h2>Control de Ascenso: 
         <span class="badge-grupo" [ngClass]="'badge-' + grupoActual?.toLowerCase()">
-          {{ grupoActual }}
+          {{ grupoActual | titlecase }}
         </span>
       </h2>
       <p>Modifica el Ascenso de los muchachos y presiona Guardar al finalizar.</p>
     </div>
 
     <div class="header-actions">
-      <button class="btn-toggle-menu btn-guardar-estilo" (click)="guardarCambiosEnBaseDatos()" [disabled]="cargando">
+      
+      <button class="btn-header btn-exportar" (click)="exportarAExcel()">
+        📊 Exportar Excel
+      </button>
+      
+      <button class="btn-header btn-guardar" (click)="guardarCambiosEnBaseDatos()" [disabled]="cargando">
         @if (cargando) { ⏳ Guardando... } @else { 💾 Guardar Cambios }
       </button>
 
       <div class="menu-columnas-container">
-        <button class="btn-toggle-menu" (click)="menuAbierto = !menuAbierto">
+        <button class="btn-header btn-toggle-menu" (click)="menuAbierto = !menuAbierto">
           ⚙️ Añadir Columna ▾
         </button>
         
@@ -31,7 +36,7 @@
               <span class="dot liderazgo"></span> Premio de Liderazgo
             </button>
             <button (click)="agregarColumna('biblico'); menuAbierto = false">
-              <span class="dot biblico"></span> {{ grupoActual === 'EXPLORADORES' ? 'Reto Espiritual' : 'Estudio Bíblico' }}
+              <span class="dot biblico"></span> Estudios Bíblicos
             </button>
           </div>
         }
@@ -46,29 +51,27 @@
           <th rowspan="2" class="col-fija-header">Muchacho</th>
           <th [attr.colspan]="premiosDestreza.length || 1" class="th-categoria destreza-header">Premios de Destreza</th>
           <th [attr.colspan]="liderazgoColumnas.length || 1" class="th-categoria liderazgo-header">Premios de Liderazgo</th>
-          <th [attr.colspan]="estudiosBiblicos.length || 1" class="th-categoria biblico-header">
-            {{ grupoActual === 'EXPLORADORES' ? 'Retos Espirituales' : 'Estudios Bíblicos' }}
-          </th>
+          <th [attr.colspan]="estudiosBiblicos.length || 1" class="th-categoria biblico-header">Estudios Bíblicos</th>
         </tr>
         <tr>
           @for (col of premiosDestreza; track col.id) {
             <th class="col-destreza col-dinamica">
               <span class="txt-premio">{{ col.label }}</span>
-              <button class="btn-del-col" (click)="eliminarColumna(col.id, 'destreza', col.label)" title="Eliminar columna">×</button>
+              <button class="btn-del-col" (click)="eliminarColumna(col.id, 'destreza', col.label)" title="Eliminar">×</button>
             </th>
           } @empty { <th class="no-data-col">Sin premios</th> }
           
           @for (col of liderazgoColumnas; track col.id) {
             <th class="col-liderazgo col-dinamica">
               <span class="txt-premio">{{ col.label }}</span>
-              <button class="btn-del-col" (click)="eliminarColumna(col.id, 'liderazgo', col.label)" title="Eliminar columna">×</button>
+              <button class="btn-del-col" (click)="eliminarColumna(col.id, 'liderazgo', col.label)" title="Eliminar">×</button>
             </th>
           } @empty { <th class="no-data-col">Sin liderazgo</th> }
 
           @for (col of estudiosBiblicos; track col.id) {
             <th class="col-biblico col-dinamica">
               <span class="txt-premio">{{ col.label }}</span>
-              <button class="btn-del-col" (click)="eliminarColumna(col.id, 'biblico', col.label)" title="Eliminar columna">×</button>
+              <button class="btn-del-col" (click)="eliminarColumna(col.id, 'biblico', col.label)" title="Eliminar">×</button>
             </th>
           } @empty { <th class="no-data-col">Sin asignaciones</th> }
         </tr>
@@ -99,7 +102,7 @@
         } @empty {
           <tr>
             <td [attr.colspan]="1 + (premiosDestreza.length || 1) + (liderazgoColumnas.length || 1) + (estudiosBiblicos.length || 1)" class="text-center no-data">
-              No se encontraron muchachos registrados en el grupo de {{ grupoActual | titlecase }}.
+              No hay muchachos registrados en esta base de datos.
             </td>
           </tr>
         }

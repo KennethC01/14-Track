@@ -1,3 +1,4 @@
+<!-- MANTENEMOS TU ESTRUCTURA DE CARGA Y NAVBAR IGUAL -->
 <div class="loading-screen" *ngIf="cargando">
   <div class="rosa-container">
     <img src="/icons/rosaNautica.png" alt="Rosa Náutica" class="rosa-giratoria">
@@ -6,11 +7,8 @@
 </div>
 
 <div class="dashboard-container" *ngIf="!cargando">
-  
   <nav class="navbar">
-    <div class="brand">
-      <h1>14-TRACK</h1>
-    </div>
+    <div class="brand"><h1>14-TRACK</h1></div>
     <div class="user-info">
       <span class="badge" [ngClass]="grupoUsuario.toLowerCase()">{{ grupoUsuario }}</span>
       <span class="email">{{ emailUsuario }}</span>
@@ -20,187 +18,125 @@
 
   <main class="main-content">
     
+    <!-- ESTRUCTURA UNIFICADA PARA TODOS LOS GRUPOS CON EL ORDEN: INGRESO -> ASISTENCIA -> ASCENSO -->
+    
+    <!-- NAVEGANTES -->
     @if (grupoUsuario === 'NAVEGANTES') {
       <div class="welcome-banner navegantes">
         <h2>Módulo de Navegantes</h2>
-        <p>¡Bienvenido a bordo! Tu flota está lista para el despegue. Revisa tus misiones del destacamento.</p>
+        <p>¡Bienvenido a bordo! Tu flota está lista para el despegue.</p>
       </div>
-
       <div class="modules-grid">
         <div class="grid-card">
-          <div class="card-icon">
-            <!-- Icono personalizado para Asistencia -->
-            <img src="/icons/users.png" alt="Icono Asistencia" class="custom-icon">
-          </div>
-          <h3>Asistencia</h3>
-          <p>Registro de Asistencia de los muchachos.</p>
-          <div class="status-badge" routerLink="/navegantes/asistencia" style="cursor: pointer;">
-            Registrar Asistencia
-          </div>
-        </div>
-
-        <div class="grid-card"> 
-          <div class="card-icon">
-            <!-- Icono personalizado para Ingreso -->
-            <img src="/icons/plus.png" alt="Icono Ingreso" class="custom-icon">
-          </div>
+          <div class="card-icon"><img src="/icons/plus.png" alt="Icono Ingreso" class="custom-icon"></div>
           <h3>Ingreso de Muchachos</h3>
           <p>Dar de alta nuevos muchachos en la base de datos.</p>
-          <div class="status-badge" routerLink="/navegantes/registro" style="cursor: pointer;">
-            Administrar Lista
-          </div>
+          <div class="status-badge" routerLink="/navegantes/registro" style="cursor: pointer;">Administrar Lista</div>
         </div>
-
         <div class="grid-card">
-          <div class="card-icon">
-            <!-- Icono personalizado para Ascenso -->
-            <img src="/icons/grafico.png" alt="Icono Ascenso" class="custom-icon">
-          </div>
+          <div class="card-icon"><img src="/icons/users.png" alt="Icono Asistencia" class="custom-icon"></div>
+          <h3>Asistencia</h3>
+          <p>Registro de Asistencia de los muchachos.</p>
+          <div class="status-badge" routerLink="/navegantes/asistencia" style="cursor: pointer;">Registrar Asistencia</div>
+        </div>
+        <div class="grid-card">
+          <div class="card-icon"><img src="/icons/grafico.png" alt="Icono Ascenso" class="custom-icon"></div>
           <h3>Ascenso</h3>
-          <p>Progreso de tus parches, especialidades náuticas y lecturas de la Ruta de la Promesa.</p>
-          <div class="status-badge" routerLink="/navegantes/ascenso" style="cursor: pointer;">
-            Registrar Ascenso
-          </div>
+          <p>Progreso de tus parches, especialidades náuticas y lecturas.</p>
+          <div class="status-badge" routerLink="/navegantes/ascenso" style="cursor: pointer;">Registrar Ascenso</div>
         </div>
       </div>
     }
 
+    <!-- PIONEROS -->
     @else if (grupoUsuario === 'PIONEROS') {
       <div class="welcome-banner pioneros">
         <h2>Módulo de Pioneros</h2>
-        <p>Listo para abrir nuevos senderos. Prepara las herramientas de exploración y el campamento base.</p>
+        <p>Listo para abrir nuevos senderos. Prepara las herramientas.</p>
       </div>
-
       <div class="modules-grid">
         <div class="grid-card">
-          <div class="card-icon">
-            <!-- Icono personalizado para Asistencia -->
-            <img src="/icons/users.png" alt="Icono Asistencia" class="custom-icon">
-          </div>
-          <h3>Asistencia</h3>
-          <p>Registro de Asistencia de los muchachos.</p>
-          <div class="status-badge" routerLink="/pioneros/asistencia" style="cursor: pointer;">
-            Registrar Asistencia
-          </div>
-        </div>
-
-        <div class="grid-card"> 
-          <div class="card-icon">
-            <!-- Icono personalizado para Ingreso -->
-            <img src="/icons/plus.png" alt="Icono Ingreso" class="custom-icon">
-          </div>
+          <div class="card-icon"><img src="/icons/plus.png" alt="Icono Ingreso" class="custom-icon"></div>
           <h3>Ingreso de Muchachos</h3>
           <p>Dar de alta nuevos muchachos en la base de datos.</p>
-          <div class="status-badge" routerLink="/pioneros/registro" style="cursor: pointer;">
-            Administrar Lista
-          </div>
+          <div class="status-badge" routerLink="/pioneros/registro" style="cursor: pointer;">Administrar Lista</div>
         </div>
-
         <div class="grid-card">
-          <div class="card-icon">
-            <!-- Icono personalizado para Ascenso -->
-            <img src="/icons/grafico.png" alt="Icono Ascenso" class="custom-icon">
-          </div>
+          <div class="card-icon"><img src="/icons/users.png" alt="Icono Asistencia" class="custom-icon"></div>
+          <h3>Asistencia</h3>
+          <p>Registro de Asistencia de los muchachos.</p>
+          <div class="status-badge" routerLink="/pioneros/asistencia" style="cursor: pointer;">Registrar Asistencia</div>
+        </div>
+        <div class="grid-card">
+          <div class="card-icon"><img src="/icons/grafico.png" alt="Icono Ascenso" class="custom-icon"></div>
           <h3>Ascenso</h3>
-          <p>Evaluación de técnicas de supervivencia y devocionales de campo de la brújula.</p>
-          <div class="status-badge" routerLink="/pioneros/ascenso" style="cursor: pointer;">
-            Registrar Ascenso
-          </div>
+          <p>Evaluación de técnicas de supervivencia y devocionales.</p>
+          <div class="status-badge" routerLink="/pioneros/ascenso" style="cursor: pointer;">Registrar Ascenso</div>
         </div>
       </div>
     }
 
+    <!-- SEGUIDORES -->
     @else if (grupoUsuario === 'SEGUIDORES') {
       <div class="welcome-banner seguidores">
         <h2>Módulo de Seguidores</h2>
-        <p>Entrenamiento de líderes en marcha. Consulta tus asignaciones en la academia.</p>
+        <p>Entrenamiento de líderes en marcha. Consulta tus asignaciones.</p>
       </div>
-
       <div class="modules-grid">
         <div class="grid-card">
-          <div class="card-icon">
-            <!-- Icono personalizado para Asistencia -->
-            <img src="/icons/users.png" alt="Icono Asistencia" class="custom-icon">
-          </div>
-          <h3>Asistencia</h3>
-          <p>Registro de Asistencia de los muchachos.</p>
-          <div class="status-badge" routerLink="/seguidores/asistencia" style="cursor: pointer;">
-            Registrar Asistencia
-          </div>
-        </div>
-
-        <div class="grid-card"> 
-          <div class="card-icon">
-            <!-- Icono personalizado para Ingreso -->
-            <img src="/icons/plus.png" alt="Icono Ingreso" class="custom-icon">
-          </div>
+          <div class="card-icon"><img src="/icons/plus.png" alt="Icono Ingreso" class="custom-icon"></div>
           <h3>Ingreso de Muchachos</h3>
           <p>Dar de alta nuevos muchachos en la base de datos.</p>
-          <div class="status-badge" routerLink="/seguidores/registro" style="cursor: pointer;">
-            Administrar Lista
-          </div>
+          <div class="status-badge" routerLink="/seguidores/registro" style="cursor: pointer;">Administrar Lista</div>
         </div>
-
         <div class="grid-card">
-          <div class="card-icon">
-            <!-- Icono personalizado para Ascenso -->
-            <img src="/icons/grafico.png" alt="Icono Ascenso" class="custom-icon">
-          </div>
+          <div class="card-icon"><img src="/icons/users.png" alt="Icono Asistencia" class="custom-icon"></div>
+          <h3>Asistencia</h3>
+          <p>Registro de Asistencia de los muchachos.</p>
+          <div class="status-badge" routerLink="/seguidores/asistencia" style="cursor: pointer;">Registrar Asistencia</div>
+        </div>
+        <div class="grid-card">
+          <div class="card-icon"><img src="/icons/grafico.png" alt="Icono Ascenso" class="custom-icon"></div>
           <h3>Ascenso</h3>
-          <p>Créditos acumulados en liderazgo, méritos y análisis bíblico profundo.</p>
-          <div class="status-badge" routerLink="/seguidores/ascenso" style="cursor: pointer;">
-            Registrar Ascenso
-          </div>
+          <p>Créditos acumulados en liderazgo, méritos y análisis bíblico.</p>
+          <div class="status-badge" routerLink="/seguidores/ascenso" style="cursor: pointer;">Registrar Ascenso</div>
         </div>
       </div>
     }
 
+    <!-- EXPLORADORES -->
     @else if (grupoUsuario === 'EXPLORADORES') {
       <div class="welcome-banner exploradores">
         <h2>Módulo de Exploradores</h2>
         <p>BIENVENIDO!</p>
       </div>
-
       <div class="modules-grid">
         <div class="grid-card">
-          <div class="card-icon">
-            <img src="/icons/users.png" alt="Icono Asistencia" class="custom-icon">
-          </div>
-          <h3>Asistencia</h3>
-          <p>Registro de Asistencia de los muchachos.</p>
-          <div class="status-badge" routerLink="/exploradores/asistencia" style="cursor: pointer;">
-            Registrar Asistencia
-          </div>
-        </div>
-
-        <div class="grid-card"> 
-          <div class="card-icon">
-              <img src="/icons/plus.png" alt="Icono Asistencia" class="custom-icon">
-          </div>
+          <div class="card-icon"><img src="/icons/plus.png" alt="Icono Ingreso" class="custom-icon"></div>
           <h3>Ingreso de Muchachos</h3>
           <p>Dar de alta nuevos muchachos en la base de datos.</p>
-          <div class="status-badge" routerLink="/exploradores/registro" style="cursor: pointer;">
-            Administrar Lista
-          </div>
+          <div class="status-badge" routerLink="/exploradores/registro" style="cursor: pointer;">Administrar Lista</div>
         </div>
-
         <div class="grid-card">
-            <div class="card-icon">
-              <img src="/icons/grafico.png" alt="Icono Asistencia" class="custom-icon">
-            </div>
+          <div class="card-icon"><img src="/icons/users.png" alt="Icono Asistencia" class="custom-icon"></div>
+          <h3>Asistencia</h3>
+          <p>Registro de Asistencia de los muchachos.</p>
+          <div class="status-badge" routerLink="/exploradores/asistencia" style="cursor: pointer;">Registrar Asistencia</div>
+        </div>
+        <div class="grid-card">
+          <div class="card-icon"><img src="/icons/grafico.png" alt="Icono Ascenso" class="custom-icon"></div>
           <h3>Ascenso</h3>
-          <p>Evaluación de premios de destrezas, platinos, de liderazgo y retos espirituales.</p>
-          <div class="status-badge" routerLink="/exploradores/ascenso" style="cursor: pointer;">
-            Registrar Ascenso
-          </div>
+          <p>Evaluación de premios de destrezas, liderazgo y retos espirituales.</p>
+          <div class="status-badge" routerLink="/exploradores/ascenso" style="cursor: pointer;">Registrar Ascenso</div>
         </div>
       </div>
     }
-    
+
+    <!-- ERROR SI NO HAY GRUPO -->
     @else {
       <div class="panel-card error-panel">
         <h2>⚠️ Estado de Cuenta Indefinido</h2>
-        <p>No se pudo identificar tu grupo en la base de datos de 14-TRACK. Revisa tu perfil o contacta al administrador.</p>
+        <p>No se pudo identificar tu grupo en la base de datos. Revisa tu perfil.</p>
       </div>
     }
 

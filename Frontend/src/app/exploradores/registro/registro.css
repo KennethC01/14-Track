@@ -61,3 +61,65 @@
 .muchachos-table td { padding: 0.8rem; border-bottom: 1px solid #2a2a2a; }
 .badge-patrulla { background: #2a2a2a; padding: 3px 8px; border-radius: 4px; font-size: 0.8rem;}
 .btn-delete { background: none; border: none; cursor: pointer; }
+
+.btn-delete {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+}
+
+/* Centrar el contenido de la celda */
+.td-center {
+  text-align: center;
+  vertical-align: middle;
+}
+
+/* Asegurar que el botón también esté centrado */
+.btn-delete {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: inline-flex; /* Ayuda a centrar */
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+}
+
+/* Controlar el tamaño del icono */
+.icon-trash {
+  width: 28px;  
+  height: 28px;
+  display: block;
+}
+.icon-trash {
+  width: 28px;
+  height: 28px;
+  /* Filtro para convertir cualquier PNG a color ROJO */
+  filter: invert(18%) sepia(97%) saturate(7489%) hue-rotate(357deg) brightness(96%) contrast(119%);
+}
+
+.btn-edit {
+  background: #2b2b2b; /* Azul moderno */
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-size: 14px;
+}
+
+.btn-edit:hover {
+  background: #272727;
+}
+
+/* Asegúrate de que el encabezado tenga espacio para la nueva acción */
+th:last-child {
+  min-width: 100px;
+}

@@ -3,6 +3,9 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, ActivatedRoute } from '@angular/router';
 
+// Librería para exportación profesional a .xlsx
+import * as XLSX from 'xlsx';
+
 import { getApp, getApps } from 'firebase/app';
 import { 
   getFirestore, 
@@ -42,7 +45,6 @@ export class AscensoComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // Escucha cambios en la ruta para saber qué grupo cargar
     this.route.params.subscribe(params => {
       this.grupoActual = params['grupo']?.toUpperCase() || 'EXPLORADORES';
       if (isPlatformBrowser(this.platformId)) {
@@ -66,7 +68,6 @@ export class AscensoComponent implements OnInit {
     if (!this.firestore) return;
     
     try {
-      // 1. Cargar configuración dinámica específica de este grupo
       const configRef = doc(this.firestore, 'configuracion_columnas', this.grupoActual.toUpperCase());
       const configSnap = await getDoc(configRef);
       
@@ -75,14 +76,8 @@ export class AscensoComponent implements OnInit {
         this.premiosDestreza = data['premiosDestreza'] || [];
         this.liderazgoColumnas = data['liderazgoColumnas'] || [];
         this.estudiosBiblicos = data['estudiosBiblicos'] || [];
-      } else {
-        // Reset si no hay config
-        this.premiosDestreza = [];
-        this.liderazgoColumnas = [];
-        this.estudiosBiblicos = [];
       }
 
-      // 2. Cargar muchachos de su colección única (ej: pioneros_lista)
       const nombreColeccion = `${this.grupoActual.toLowerCase()}_lista`;
       const muchachosRef = collection(this.firestore, nombreColeccion);
       const querySnapshot = await getDocs(muchachosRef);
@@ -134,6 +129,45 @@ export class AscensoComponent implements OnInit {
     }
   }
 
+  exportarAExcel() {
+    if (this.muchachos.length === 0) return;
+
+    // 1. Definimos las etiquetas de las columnas en el orden que queremos
+    const todasLasColumnas = [
+      ...this.premiosDestreza, 
+      ...this.liderazgoColumnas, 
+      ...this.estudiosBiblicos
+    ];
+    
+    // Este es el orden exacto que queremos: Nombre primero, luego el resto
+    const encabezados = ['NOMBRE DEL MUCHACHO', ...todasLasColumnas.map(c => c.label)];
+
+    // 2. Mapeamos los datos
+    const datosParaExportar = this.muchachos.map(m => {
+      const fila: any = { 'NOMBRE DEL MUCHACHO': m.nombre };
+      todasLasColumnas.forEach(col => {
+        fila[col.label] = m.ascenso[col.id] ? 'X' : '';
+      });
+      return fila;
+    });
+
+    // 3. Creamos la hoja usando la propiedad 'header' para forzar el orden
+    const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(datosParaExportar, { 
+      header: encabezados 
+    });
+
+    // 4. Ajustamos anchos
+    ws['!cols'] = [
+      { wch: 30 }, 
+      ...todasLasColumnas.map(() => ({ wch: 15 }))
+    ];
+
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Control de Ascenso');
+
+    XLSX.writeFile(wb, `Ascenso_${this.grupoActual}_${new Date().toLocaleDateString()}.xlsx`);
+  }
+  
   async agregarColumna(tipo: string) {
     const nombre = prompt(`Nombre del nuevo ${tipo}:`);
     if (!nombre) return;
