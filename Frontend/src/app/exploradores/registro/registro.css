@@ -123,3 +123,35 @@
 th:last-child {
   min-width: 100px;
 }
+
+.contenedor-tabla-responsiva {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* Deslizamiento suave en móviles */
+    margin-top: 1rem;
+}
+
+/* =========================================
+   2. MEDIA QUERY PARA EL FORMULARIO EN MÓVILES
+   ========================================= */
+.registro-container, .registro-card {
+    box-sizing: border-box; 
+}
+
+@media (max-width: 768px) {
+    /* Usamos tu clase real: .form-grid */
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr; /* Fuerza 1 sola columna */
+        gap: 15px; 
+    }
+
+    /* Reducimos el padding (2rem es muy grande para un celular) */
+    .registro-container {
+        padding: 1rem;
+    }
+    
+    .registro-card {
+        padding: 1rem;
+    }
+}
