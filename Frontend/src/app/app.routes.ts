@@ -10,12 +10,20 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'dashboard', component: DashboardComponent },
   
-  // RUTA DINÁMICA DE ASCENSO (El ':grupo' captura el segmento de la URL)
-  // Ejemplos que funcionarán con esta única línea:
-  // /navegantes/ascenso, /pioneros/ascenso, /seguidores/ascenso, /exploradores/ascenso
-  { path: ':grupo/ascenso', component: AscensoComponent },
-
-  // RUTAS DE ASISTENCIA Y REGISTRO (Si quieres hacerlas dinámicas también)
-  { path: ':grupo/asistencia', component: AsistenciaComponent },
-  { path: ':grupo/registro', component: RegistroComponent },
+  // Usamos renderMode: 'client' para saltar el error de prerendering
+  { 
+    path: ':grupo/ascenso', 
+    component: AscensoComponent,
+    data: { renderMode: 'client' } 
+  },
+  { 
+    path: ':grupo/asistencia', 
+    component: AsistenciaComponent,
+    data: { renderMode: 'client' } 
+  },
+  { 
+    path: ':grupo/registro', 
+    component: RegistroComponent,
+    data: { renderMode: 'client' } 
+  },
 ];
