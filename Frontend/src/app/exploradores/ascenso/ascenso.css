@@ -13,250 +13,66 @@
 /* ==========================================
    BOTONES DE CABECERA (Alineados y uniformes)
    ========================================== */
-.btn-exportar, 
-.btn-guardar, 
-.btn-toggle-menu {
-  /* Propiedades unificadas para que sean iguales */
-  height: 40px; 
-  padding: 0 16px;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  transition: all 0.2s ease;
-  border: 1px solid transparent;
-  box-sizing: border-box;
-}
-
-/* Estilos específicos de cada uno (manteniendo la lógica original) */
-.btn-exportar { 
-  background-color: #28a745; 
-  color: white; 
-}
-.btn-exportar:hover { background-color: #17782c; }
-
-.btn-guardar { 
-  background-color: #1d1c1c; 
-  color: #ffffff; 
-  border-color: #ccc; 
-}
-.btn-guardar:hover { background-color: #f0f0f0; }
-
-.btn-toggle-menu { 
-  background-color: #1e1e22; 
-  color: #f1f5f9; 
-  border: 1px solid #ffffff; 
-}
-.btn-toggle-menu:hover { background-color: #2d2d34; }
-
-/* ==========================================
-   ENCABEZADO
-   ========================================== */
 .ascenso-header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
+  flex-direction: column; /* Apila info y botones en móvil */
+  gap: 20px;
   background: #1e1e22;
-  padding: 20px 24px;
+  padding: 20px;
   border-radius: 12px;
   border: 1px solid #2d2d34;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
 }
 
+/* Contenedor que agrupa todos los botones de acción */
 .header-actions {
   display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-/* ==========================================
-   TABLA Y ELEMENTOS RESTANTES
-   (El resto de tus estilos se mantienen igual)
-   ========================================== */
-.table-responsive {
-  background: #1e1e22;
-  border-radius: 12px;
-  overflow-x: auto;
-  border: 1px solid #2d2d34;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
-}
-
-.ascenso-table { width: 100%; border-collapse: collapse; }
-
-.ascenso-table th, 
-.ascenso-table td {
-  padding: 14px 20px;
-  border: 1px solid #3a3a42;
-  text-align: center;
-  vertical-align: middle;
-  white-space: nowrap;
-  font-size: 14px;
-}
-
-.ascenso-table tbody tr:hover { background-color: #25252b; }
-
-.th-categoria { 
-  font-weight: 600; color: #ffffff; padding: 12px; font-size: 13px;
-  letter-spacing: 0.05em; text-transform: uppercase; background-color: #2d2d34;
-}
-
-.col-dinamica { position: relative; padding: 20px !important; }
-
-/* 1. Ocultar la X por defecto en los encabezados */
-.btn-del-col {
-  opacity: 0;
-  transition: opacity 0.2s ease;
-  background: transparent;
-  border: none;
-  color: #ef4444; /* Color rojo */
-  cursor: pointer;
-  margin-left: 6px;
-  font-weight: bold;
-  font-size: 20px;
-}
-
-/* 2. Mostrar la X solo cuando el mouse esté sobre el encabezado (th) */
-.col-dinamica:hover .btn-del-col {
-  opacity: 1;
-}
-
-/* 3. Opcional: Que la X se agrande un poco al pasar el cursor */
-.btn-del-col:hover {
-  transform: scale(1.6);
-}
-
-/* Contenedor padre del menú */
-.menu-columnas-container {
-  position: relative;
-}
-
-/* El menú flotante */
-.dropdown-menu-columnas {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  margin-top: 8px;
-  background-color: #1e1e22;
-  border: 1px solid #3a3a42;
-  border-radius: 10px;
-  padding: 8px 0;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
-  width: 200px;
-  z-index: 100;
-  animation: fadeIn 0.2s ease-out;
-}
-
-/* Estilo de los botones dentro del menú */
-.dropdown-menu-columnas button {
+  flex-wrap: wrap; /* Permite que salten a la siguiente fila si no caben */
+  justify-content: center;
+  gap: 10px;
   width: 100%;
-  padding: 12px 16px;
-  background: none;
-  border: none;
-  color: #e2e8f0;
-  text-align: left;
+}
+
+/* Estilo unificado para TODOS los botones de la cabecera */
+.btn-header {
+  flex: 1 1 calc(33% - 10px); /* Intenta poner 3 en una fila */
+  min-width: 120px;
+  height: 45px; /* Más altura para el dedo */
+  padding: 0 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
-  font-size: 14px;
-  transition: background 0.2s;
+  justify-content: center;
+  gap: 6px;
+  border: none;
+  transition: opacity 0.2s;
+  white-space: nowrap;
 }
 
-.dropdown-menu-columnas button:hover {
-  background-color: #2d2d34;
-  color: #ffffff;
+/* Colores específicos */
+.btn-exportar { background-color: #28a745; color: white; }
+.btn-guardar { background-color: #007bff; color: white; }
+.btn-toggle-menu { background-color: #3a3a42; color: white; }
+
+/* Asegurar que el contenedor del menú no rompa el flex */
+.menu-columnas-container {
+  flex: 1 1 100%; /* El botón de añadir columna ocupará su propia fila si es necesario */
+  display: flex;
+  justify-content: center;
 }
 
-/* Puntos de colores decorativos */
-.dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  margin-right: 10px;
-}
-.dot.destreza { background-color: #ff0000; }
-.dot.liderazgo { background-color: #ff0000; }
-.dot.biblico { background-color: #ff0000; }
-
-/* Animación simple */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-5px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.tabla-scroll {
-    width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    display: block;
-}
-
-.table { /* O el nombre de la clase de tu tabla en ascenso */
-    min-width: 600px;
-    width: 100%;
-    border-collapse: collapse;
-}
-
-@media (max-width: 768px) {
-    /* Reduce los márgenes para aprovechar el ancho */
-    .container {
-        padding: 10px;
-    }
-    
-    /* Si tienes botones de acción, dales un tamaño cómodo para el dedo */
-    .btn-edit, .btn-delete {
-        padding: 10px !important;
-        margin: 0 5px;
-    }
-}
-
-.header-actions-container {
-    display: flex;
-    gap: 10px;
-    margin: 15px 0;
-    justify-content: center; /* Centra los botones en la pantalla */
-    flex-wrap: wrap; /* Permite que se acomoden si la pantalla es muy pequeña */
-}
-
-/* Estilo para los botones */
-.btn-export, .btn-save {
-    padding: 12px 20px !important; /* Más grandes para el dedo */
-    font-size: 16px !important;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    flex: 1; /* Hace que ocupen el mismo espacio */
-    min-width: 140px; /* Tamaño mínimo para que no se vean raros */
-    text-align: center;
-}
-
-.btn-export {
-    background-color: #28a745; /* Verde */
-    color: white;
-}
-
-.btn-save {
-    background-color: #007bff; /* Azul */
-    color: white;
-}
-
-.actions-wrapper {
-    display: flex !important;
-    flex-direction: row !important; /* Los pone lado a lado */
-    justify-content: center !important;
-    gap: 10px !important;
-    margin-top: 20px !important;
-    margin-bottom: 20px !important;
-    width: 100% !important;
-    position: relative !important; /* IMPORTANTE: Elimina el absolute */
-}
-
-/* Forzar que los botones se vean normales */
-.tu-clase-exportar, .tu-clase-guardar {
-    position: static !important; /* Fuerza a que no floten */
-    margin: 0 !important;
+@media (min-width: 600px) {
+  .ascenso-header {
+    flex-direction: row; /* En escritorio, pone la info a la izquierda y botones a la derecha */
+    justify-content: space-between;
+  }
+  .header-actions {
+    flex-wrap: nowrap;
+    width: auto;
+  }
+  .menu-columnas-container {
+    flex: auto;
+  }
 }
