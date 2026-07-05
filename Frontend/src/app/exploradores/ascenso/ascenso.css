@@ -187,3 +187,29 @@
   from { opacity: 0; transform: translateY(-5px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+.tabla-scroll {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    display: block;
+}
+
+.table { /* O el nombre de la clase de tu tabla en ascenso */
+    min-width: 600px;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+@media (max-width: 768px) {
+    /* Reduce los márgenes para aprovechar el ancho */
+    .container {
+        padding: 10px;
+    }
+    
+    /* Si tienes botones de acción, dales un tamaño cómodo para el dedo */
+    .btn-edit, .btn-delete {
+        padding: 10px !important;
+        margin: 0 5px;
+    }
+}
