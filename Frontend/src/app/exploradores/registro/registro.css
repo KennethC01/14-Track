@@ -139,19 +139,31 @@ th:last-child {
 }
 
 @media (max-width: 768px) {
-    /* Usamos tu clase real: .form-grid */
-    .form-grid {
-        display: grid;
-        grid-template-columns: 1fr; /* Fuerza 1 sola columna */
-        gap: 15px; 
+    /* 1. Ajustar el contenedor principal */
+    .registro-card {
+        padding: 1rem !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        overflow-x: hidden !important;
     }
 
-    /* Reducimos el padding (2rem es muy grande para un celular) */
-    .registro-container {
-        padding: 1rem;
+    /* 2. Forzar que el grid y CUALQUIER contenedor de fila interno se apile verticalmente */
+    .form-grid, 
+    .form-grid > div {
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100% !important;
+        gap: 15px !important;
     }
-    
-    .registro-card {
-        padding: 1rem;
+
+    /* 3. Asegurar que los inputs no se salgan de la pantalla */
+    .form-group {
+        width: 100% !important;
+    }
+
+    .form-input, select.form-input {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
     }
 }
