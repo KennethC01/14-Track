@@ -23,7 +23,10 @@
     "@angular/build": "^22.0.4",
     "@angular/cli": "^22.0.4",
     "@angular/compiler-cli": "^22.0.0",
+    "@angular/platform-server": "^22.0.0",
+    "@angular/ssr": "^22.0.4",
     "@types/node": "^20.17.19",
-    "typescript": "~6.0.2"
+    "typescript": "~6.0.2",
+    "xlsx": "^0.18.5"
   }
 }
