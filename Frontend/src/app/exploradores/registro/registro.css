@@ -167,3 +167,55 @@ th:last-child {
         box-sizing: border-box !important;
     }
 }
+.contenedor-tabla-responsiva {
+    width: 100%;
+    max-width: 100vw; /* Asegura que no sea más ancho que la pantalla */
+    overflow-x: auto !important; /* Fuerza la barra de desplazamiento */
+    display: block !important; /* Necesario a veces para que el overflow funcione */
+    -webkit-overflow-scrolling: touch; /* Deslizamiento suave en celular */
+}
+
+/* 2. La tabla en sí */
+.muchachos-table {
+    width: 100%;
+    min-width: 700px; /* ¡ESTA ES LA CLAVE! Obliga a la tabla a ser más ancha que el celular */
+    border-collapse: collapse;
+}
+
+/* 3. Evitar que el texto se apelmace en varias líneas */
+.muchachos-table th, 
+.muchachos-table td {
+    white-space: nowrap; 
+    padding: 0.8rem;
+}
+
+/* 1. Aseguramos que el contenedor de la tabla tenga scroll horizontal */
+.tabla-scroll {
+    width: 100%;
+    overflow-x: auto; /* Esta es la propiedad que permite deslizar */
+    -webkit-overflow-scrolling: touch; /* Hace que el deslizamiento sea suave en iPhone/Android */
+    margin-top: 1rem;
+}
+
+/* 2. Forzamos un ancho mínimo a la tabla para que siempre sea más ancha que el celular */
+.muchachos-table {
+    width: 100%;
+    min-width: 600px; /* Al ser más ancha que el celular, el navegador habilitará el scroll */
+    border-collapse: collapse;
+}
+
+/* 3. Evitamos que el texto dentro de la tabla se rompa en varias líneas */
+.muchachos-table th, 
+.muchachos-table td {
+    white-space: nowrap; /* Mantiene todo el texto en una sola línea */
+    padding: 0.8rem;
+    text-align: left;
+}
+
+/* 4. Aseguramos que la columna de acciones quede bien centrada */
+.td-center {
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+    gap: 8px;
+}
