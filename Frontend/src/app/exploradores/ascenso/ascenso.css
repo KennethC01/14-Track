@@ -213,3 +213,33 @@
         margin: 0 5px;
     }
 }
+
+.header-actions-container {
+    display: flex;
+    gap: 10px;
+    margin: 15px 0;
+    justify-content: center; /* Centra los botones en la pantalla */
+    flex-wrap: wrap; /* Permite que se acomoden si la pantalla es muy pequeña */
+}
+
+/* Estilo para los botones */
+.btn-export, .btn-save {
+    padding: 12px 20px !important; /* Más grandes para el dedo */
+    font-size: 16px !important;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    flex: 1; /* Hace que ocupen el mismo espacio */
+    min-width: 140px; /* Tamaño mínimo para que no se vean raros */
+    text-align: center;
+}
+
+.btn-export {
+    background-color: #28a745; /* Verde */
+    color: white;
+}
+
+.btn-save {
+    background-color: #007bff; /* Azul */
+    color: white;
+}
