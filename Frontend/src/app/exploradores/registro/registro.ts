@@ -5,14 +5,11 @@ import { FormsModule } from '@angular/forms';
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { firebaseConfig } from '../../firebase.config';
-// 1. IMPORTA EL COMPONENTE DE REPORTES
-import { ReportesComponent } from '../../reportes/reportes';
 
 @Component({
   selector: 'app-registro',
   standalone: true,
-  // 2. AÑADE REPORTESCOMPONENT A LOS IMPORTS
-  imports: [CommonModule, RouterLink, FormsModule, ReportesComponent],
+  imports: [CommonModule, RouterLink, FormsModule],
   templateUrl: './registro.html',
   styleUrl: './registro.css'
 })
@@ -32,7 +29,7 @@ export class RegistroComponent implements OnInit {
   textoBoton: string = 'Registrar Muchacho';
 
   coleccionGrupo: string = 'exploradores_lista'; 
-  muchachos: any[] = []; // Renombrado a 'muchachos' para que coincida con tu HTML
+  muchachos: any[] = []; 
   private db: any;
 
   constructor(private cdr: ChangeDetectorRef, private router: Router, private route: ActivatedRoute) {
@@ -69,7 +66,7 @@ export class RegistroComponent implements OnInit {
     }
   }
 
-  editarMuchacho(m: any) { // Cambiado nombre para coincidir con el HTML anterior
+  editarMuchacho(m: any) {
     this.muchachoEnEdicion = m;
     this.nuevoNombre = m.nombre || '';
     this.nuevaIdentidad = m.identidad || '';
@@ -106,7 +103,8 @@ export class RegistroComponent implements OnInit {
       }
       
       this.limpiarFormulario();
-      this.obtenerMuchachos(); // Recarga la lista
+      this.obtenerMuchachos();
+      this.cdr.detectChanges(); // Refresca la vista
       alert("Operación realizada con éxito");
     } catch (error) {
       console.error("Error al guardar:", error);
@@ -117,14 +115,18 @@ export class RegistroComponent implements OnInit {
     this.muchachoEnEdicion = null;
     this.textoBoton = 'Registrar Muchacho';
     this.nuevoNombre = '';
+    this.nuevaIdentidad = '';
+    this.nuevoTelefono = '';
+    this.nuevoNombrePadres = '';
+    this.nuevoTelefonoPadres = '';
     this.nuevoInscrito = false;
-    // ... resto de limpiezas si es necesario
   }
 
   async borrarMuchacho(id: string) {
     if (confirm("¿Eliminar este registro?")) {
       await deleteDoc(doc(this.db, this.coleccionGrupo, id));
       this.obtenerMuchachos();
+      this.cdr.detectChanges();
     }
   }
 }
