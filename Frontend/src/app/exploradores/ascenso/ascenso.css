@@ -11,32 +11,31 @@
 }
 
 /* ==========================================
-   BOTONES DE CABECERA (Alineados y uniformes)
+   BOTONES DE CABECERA (Tu código original)
    ========================================== */
 .ascenso-header {
   display: flex;
-  flex-direction: column; /* Apila info y botones en móvil */
+  flex-direction: column;
   gap: 20px;
   background: #1e1e22;
   padding: 20px;
   border-radius: 12px;
   border: 1px solid #2d2d34;
+  margin-bottom: 24px;
 }
 
-/* Contenedor que agrupa todos los botones de acción */
 .header-actions {
   display: flex;
-  flex-wrap: wrap; /* Permite que salten a la siguiente fila si no caben */
+  flex-wrap: wrap;
   justify-content: center;
   gap: 10px;
   width: 100%;
 }
 
-/* Estilo unificado para TODOS los botones de la cabecera */
 .btn-header {
-  flex: 1 1 calc(33% - 10px); /* Intenta poner 3 en una fila */
+  flex: 1 1 calc(33% - 10px);
   min-width: 120px;
-  height: 45px; /* Más altura para el dedo */
+  height: 45px;
   padding: 0 12px;
   border-radius: 8px;
   font-size: 13px;
@@ -51,28 +50,57 @@
   white-space: nowrap;
 }
 
-/* Colores específicos */
 .btn-exportar { background-color: #28a745; color: white; }
 .btn-guardar { background-color: #007bff; color: white; }
 .btn-toggle-menu { background-color: #3a3a42; color: white; }
 
-/* Asegurar que el contenedor del menú no rompa el flex */
-.menu-columnas-container {
-  flex: 1 1 100%; /* El botón de añadir columna ocupará su propia fila si es necesario */
-  display: flex;
-  justify-content: center;
+/* ==========================================
+   NUEVA TABLA (Ordenada y con líneas)
+   ========================================== */
+.ascenso-tabla-container {
+  border: 1px solid #2d2d34;
+  border-radius: 12px;
+  overflow: hidden; /* Esto hace que los bordes redondeados se vean bien */
+  background-color: #1e1e22;
 }
 
+.ascenso-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #ffffff;
+}
+
+.ascenso-table th, 
+.ascenso-table td {
+  padding: 16px;
+  text-align: left;
+  border: 1px solid #2d2d34; /* Aquí creamos las líneas de la cuadrícula */
+}
+
+.ascenso-table th {
+  background-color: #25252b;
+  font-weight: 600;
+  color: #a1a1aa;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
+/* Centrar los checkboxes */
+.ascenso-table td:nth-child(n+2), 
+.ascenso-table th:nth-child(n+2) {
+  text-align: center;
+}
+
+/* ==========================================
+   RESPONSIVIDAD
+   ========================================== */
 @media (min-width: 600px) {
   .ascenso-header {
-    flex-direction: row; /* En escritorio, pone la info a la izquierda y botones a la derecha */
+    flex-direction: row;
     justify-content: space-between;
   }
   .header-actions {
     flex-wrap: nowrap;
     width: auto;
-  }
-  .menu-columnas-container {
-    flex: auto;
   }
 }
