@@ -1,43 +1,54 @@
-.report-container { 
-  padding: 30px; 
-  max-width: 900px; 
-  margin: auto; 
-  font-family: 'Segoe UI', sans-serif; 
-  background-color: #121212; 
+/* Esto hace que toda la página tenga el fondo gris oscuro */
+:host {
+  display: block;
+  background-color: #121212;
   min-height: 100vh;
+  padding: 20px;
 }
 
+.report-container { 
+  max-width: 1000px; 
+  margin: auto; 
+  font-family: 'Segoe UI', sans-serif;
+  color: #ffffff; /* Texto blanco para contraste */
+}
+
+/* Ajuste para que el botón de volver destaque sobre el fondo oscuro */
 .btn-volver { 
-  background: #333; color: white; border: none; padding: 10px 20px; 
-  border-radius: 6px; cursor: pointer; margin-bottom: 20px; 
+  background: #333; 
+  color: white; 
+  border: none; 
+  padding: 10px 20px; 
+  border-radius: 6px; 
+  cursor: pointer; 
+  margin-bottom: 20px; 
 }
 
 .stats-grid { 
   display: grid; 
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
   gap: 20px; 
   margin-bottom: 30px; 
 }
 
 .stat-card { 
-  background: #1e1e1e; 
-  color: #e0e0e0; 
-  padding: 25px; 
+  background: #1e1e1e; /* Gris un poco más claro que el fondo */
+  color: white; 
+  padding: 20px; 
   border-radius: 12px; 
   text-align: center; 
-  border: 1px solid #333;
+  border: 1px solid #333; /* Borde sutil */
 }
 
-.stat-card h3 { margin: 0; font-size: 0.9rem; color: #888; text-transform: uppercase; }
-.stat-card p { font-size: 2.5rem; font-weight: bold; margin: 10px 0 0; color: #fff; }
+.stat-card h3 { margin: 0; font-size: 1.1rem; opacity: 0.7; }
+.stat-card p { font-size: 2.5rem; font-weight: bold; margin: 10px 0 0; }
 
 .progress-container { 
   background: #1e1e1e; 
   padding: 25px; 
   border-radius: 12px; 
-  color: #e0e0e0; 
   border: 1px solid #333;
 }
 
-.progress-bar-bg { background: #333; height: 15px; border-radius: 10px; overflow: hidden; margin: 15px 0; }
+.progress-bar-bg { background: #333; height: 20px; border-radius: 10px; overflow: hidden; margin: 15px 0; }
 .progress-bar-fill { background: #e63946; height: 100%; transition: width 1s ease-in-out; }

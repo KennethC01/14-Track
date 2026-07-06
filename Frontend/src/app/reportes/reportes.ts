@@ -14,13 +14,17 @@ import { firebaseConfig } from '../firebase.config';
 })
 export class ReportesComponent implements OnInit {
   grupoActual: string = '';
+  
+  // Métricas
   totalMuchachos: number = 0;
   inscritos: number = 0;
   pendientes: number = 0;
   porcentajeInscripcion: number = 0;
+  progresoAscenso: number = 0;
+  promedioAsistencia: number = 0;
+
   private db: any;
 
-  // 1. Inyectamos ChangeDetectorRef aquí
   constructor(private router: Router, private cdr: ChangeDetectorRef) {
     const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
     this.db = getFirestore(app);
@@ -28,38 +32,48 @@ export class ReportesComponent implements OnInit {
 
   async ngOnInit() {
     this.detectarGrupo();
-    await this.cargarDatos();
+    await this.cargarTodo();
   }
 
   detectarGrupo() {
     const url = this.router.url;
+    const gruposValidos = ['exploradores', 'navegantes', 'pioneros', 'seguidores'];
     const partes = url.split('/');
-    this.grupoActual = partes[1] || 'exploradores';
-    console.log("Grupo detectado:", this.grupoActual);
+    
+    // Identifica el grupo en la URL
+    const encontrado = partes.find(p => gruposValidos.includes(p.toLowerCase()));
+    this.grupoActual = encontrado || 'exploradores';
   }
 
-  async cargarDatos() {
+  async cargarTodo() {
     try {
-      const coleccionNombre = this.grupoActual.toLowerCase() + '_lista';
-      const snapshot = await getDocs(collection(this.db, coleccionNombre));
+      const base = this.grupoActual.toLowerCase();
       
-      const lista = snapshot.docs.map(doc => doc.data());
-      
-      this.totalMuchachos = lista.length;
-      this.inscritos = lista.filter((m: any) => m.inscrito === true).length;
+      // 1. Carga de Inscripción (Colección: grupo_lista)
+      const snapInsc = await getDocs(collection(this.db, `${base}_lista`));
+      const listaInsc = snapInsc.docs.map(doc => doc.data());
+      this.totalMuchachos = listaInsc.length;
+      this.inscritos = listaInsc.filter((m: any) => m.inscrito === true).length;
       this.pendientes = this.totalMuchachos - this.inscritos;
-      
-      this.porcentajeInscripcion = this.totalMuchachos > 0 
-        ? (this.inscritos / this.totalMuchachos) * 100 
-        : 0;
+      this.porcentajeInscripcion = this.totalMuchachos > 0 ? (this.inscritos / this.totalMuchachos) * 100 : 0;
 
-      console.log("Total:", this.totalMuchachos, "Inscritos:", this.inscritos);
-      
-      // 2. FORZAMOS la actualización de la vista
+      // 2. Carga de Ascenso (Colección: grupo_ascenso)
+      const snapAsc = await getDocs(collection(this.db, `${base}_ascenso`));
+      const listaAsc = snapAsc.docs.map(doc => doc.data());
+      const sumaProgreso = listaAsc.reduce((acc, curr) => acc + (curr['progreso'] || 0), 0);
+      this.progresoAscenso = listaAsc.length > 0 ? Math.round(sumaProgreso / listaAsc.length) : 0;
+
+      // 3. Carga de Asistencia (Colección: grupo_asistencia)
+      const snapAsis = await getDocs(collection(this.db, `${base}_asistencia`));
+      const listaAsis = snapAsis.docs.map(doc => doc.data());
+      const sumaAsis = listaAsis.reduce((acc, curr) => acc + (curr['porcentaje'] || 0), 0);
+      this.promedioAsistencia = listaAsis.length > 0 ? Math.round(sumaAsis / listaAsis.length) : 0;
+
+      // Fuerza la actualización de la vista
       this.cdr.detectChanges();
       
     } catch (error) {
-      console.error("Error al cargar datos:", error);
+      console.error("Error al cargar reportes para", this.grupoActual, ":", error);
     }
   }
 }
