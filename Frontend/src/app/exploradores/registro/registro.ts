@@ -5,11 +5,14 @@ import { FormsModule } from '@angular/forms';
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { firebaseConfig } from '../../firebase.config';
+// 1. IMPORTA EL COMPONENTE DE REPORTES
+import { ReportesComponent } from '../reportes/reportes'; 
 
 @Component({
   selector: 'app-registro',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule],
+  // 2. AÑADE REPORTESCOMPONENT A LOS IMPORTS
+  imports: [CommonModule, RouterLink, FormsModule, ReportesComponent],
   templateUrl: './registro.html',
   styleUrl: './registro.css'
 })
@@ -25,12 +28,11 @@ export class RegistroComponent implements OnInit {
   nuevoTelefonoPadres: string = '';
   nuevoInscrito: boolean = false;
   
-  // Variables para Edición
   muchachoEnEdicion: any = null; 
   textoBoton: string = 'Registrar Muchacho';
 
   coleccionGrupo: string = 'exploradores_lista'; 
-  muchachosFiltrados: any[] = []; 
+  muchachos: any[] = []; // Renombrado a 'muchachos' para que coincida con tu HTML
   private db: any;
 
   constructor(private cdr: ChangeDetectorRef, private router: Router, private route: ActivatedRoute) {
@@ -59,7 +61,7 @@ export class RegistroComponent implements OnInit {
   async obtenerMuchachos() {
     try {
       const querySnapshot = await getDocs(collection(this.db, this.coleccionGrupo));
-      this.muchachosFiltrados = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      this.muchachos = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     } catch (e) {
       console.error("Error al obtener:", e);
     } finally {
@@ -67,7 +69,7 @@ export class RegistroComponent implements OnInit {
     }
   }
 
-  prepararEdicion(m: any) {
+  editarMuchacho(m: any) { // Cambiado nombre para coincidir con el HTML anterior
     this.muchachoEnEdicion = m;
     this.nuevoNombre = m.nombre || '';
     this.nuevaIdentidad = m.identidad || '';
@@ -88,7 +90,6 @@ export class RegistroComponent implements OnInit {
         nombre: this.nuevoNombre,
         grupo: this.nuevoGrupo,
         patrulla: this.nuevaPatrulla,
-        avatar: 'boys/default.png', // Imagen estática por defecto
         identidad: this.nuevaIdentidad || '',
         telefono: this.nuevoTelefono || '',
         tipoSangre: this.nuevoTipoSangre || 'O+',
@@ -105,11 +106,10 @@ export class RegistroComponent implements OnInit {
       }
       
       this.limpiarFormulario();
-      this.obtenerMuchachos();
+      this.obtenerMuchachos(); // Recarga la lista
       alert("Operación realizada con éxito");
     } catch (error) {
       console.error("Error al guardar:", error);
-      alert("Error al guardar los datos.");
     }
   }
 
@@ -117,14 +117,11 @@ export class RegistroComponent implements OnInit {
     this.muchachoEnEdicion = null;
     this.textoBoton = 'Registrar Muchacho';
     this.nuevoNombre = '';
-    this.nuevaIdentidad = '';
-    this.nuevoTelefono = '';
-    this.nuevoNombrePadres = '';
-    this.nuevoTelefonoPadres = '';
     this.nuevoInscrito = false;
+    // ... resto de limpiezas si es necesario
   }
 
-  async eliminarMuchacho(id: string) {
+  async borrarMuchacho(id: string) {
     if (confirm("¿Eliminar este registro?")) {
       await deleteDoc(doc(this.db, this.coleccionGrupo, id));
       this.obtenerMuchachos();

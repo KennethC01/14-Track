@@ -3,6 +3,7 @@
     <button class="btn-back" routerLink="/dashboard">⬅️ Volver al Panel</button>
   </div>
 
+  <!-- Formulario de Registro -->
   <div class="registro-card">
     <div class="registro-header">
       <h2>Ingreso de Muchachos</h2>
@@ -10,52 +11,35 @@
     </div>
 
     <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-      
       <div class="form-group">
-        <label>Nombre Completo del Muchacho:</label>
+        <label>Nombre Completo:</label>
         <input type="text" [(ngModel)]="nuevoNombre" placeholder="Ej. Kenneth Caballero" class="form-input">
       </div>
-
       <div class="form-group">
         <label>Número de Identidad:</label>
         <input type="text" [(ngModel)]="nuevaIdentidad" placeholder="Ej. 0801-XXXX-XXXXX" class="form-input">
       </div>
-
       <div class="form-group">
-        <label>Número de Teléfono del Muchacho:</label>
+        <label>Teléfono:</label>
         <input type="tel" [(ngModel)]="nuevoTelefono" placeholder="Ej. +504 XXXX-XXXX" class="form-input">
       </div>
-
       <div class="form-group">
         <label>Tipo de Sangre:</label>
         <select [(ngModel)]="nuevoTipoSangre" class="form-input">
-          <option value="O+">O+</option> <option value="O-">O-</option>
-          <option value="A+">A+</option> <option value="A-">A-</option>
-          <option value="B+">B+</option> <option value="B-">B-</option>
-          <option value="AB+">AB+</option> <option value="AB-">AB-</option>
+          <option value="O+">O+</option><option value="O-">O-</option>
+          <option value="A+">A+</option><option value="A-">A-</option>
+          <option value="B+">B+</option><option value="B-">B-</option>
+          <option value="AB+">AB+</option><option value="AB-">AB-</option>
         </select>
       </div>
-
       <div class="form-group">
-        <label>Nombre de los Padres / Encargado:</label>
+        <label>Nombre del Encargado:</label>
         <input type="text" [(ngModel)]="nuevoNombrePadres" placeholder="Ej. Juan Pérez" class="form-input">
       </div>
-
       <div class="form-group">
-        <label>Teléfono de Padres / Encargado:</label>
+        <label>Teléfono del Encargado:</label>
         <input type="tel" [(ngModel)]="nuevoTelefonoPadres" placeholder="Ej. +504 XXXX-XXXX" class="form-input">
       </div>
-
-      <div class="form-group">
-        <label>Grupo (Asignado):</label>
-        <select [(ngModel)]="nuevoGrupo" class="form-input" disabled>
-          <option value="NAVEGANTES">Navegantes</option>
-          <option value="PIONEROS">Pioneros</option>
-          <option value="EXPLORADORES">Exploradores</option>
-          <option value="SEGUIDORES">Seguidores</option>
-        </select>
-      </div>
-
       <div class="form-group">
         <label>¿Está Inscrito?:</label>
         <select [(ngModel)]="nuevoInscrito" class="form-input">
@@ -63,9 +47,8 @@
           <option [ngValue]="false">No, está pendiente</option>
         </select>
       </div>
-
       <div class="form-group">
-        <label>Patrulla / cargo:</label>
+        <label>Patrulla / Cargo:</label>
         <select [(ngModel)]="nuevaPatrulla" class="form-input">
           <option value="ÁGUILAS">Águilas</option>
           <option value="LOBOS">Lobos</option>
@@ -73,17 +56,37 @@
           <option value="GUIA MAYOR">Guia Mayor</option>
           <option value="GUIA MAYOR AUXILIAR">Guia Mayor Auxiliar</option>
           <option value="Lider Juvenil">Lider Juvenil</option>
-          <option value="CAPELLAN AUXILIAR">Capellan Auxiliar</option>        
+          <option value="CAPELLAN AUXILIAR">Capellan Auxiliar</option>
           <option value="Especialista en Comunicaciones">Especialista en Comunicaciones</option>
           <option value="Guia De Patrulla">Guia De Patrulla</option>
           <option value="SIN PATRULLA">Sin Patrulla (General)</option>
         </select>
       </div>
-
       <div class="form-group btn-container" style="grid-column: span 2;">
         <button class="btn-submit" (click)="registrarMuchacho()">💾 {{ textoBoton }}</button>
       </div>
     </div>
   </div>
 
+  <!-- Listado de Muchachos (Grid View) -->
+  <div class="listado-container" style="margin-top: 40px;">
+    <h2 style="color: white; margin-bottom: 20px;">Muchachos Registrados</h2>
+    <div class="grid-muchachos" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+      <div *ngFor="let m of muchachos" class="card-muchacho" style="background: #1e1e1e; padding: 15px; border-radius: 10px; border: 1px solid #333; color: white;">
+        <h3>{{ m.nombre }}</h3>
+        <p><strong>ID:</strong> {{ m.identidad }}</p>
+        <p><strong>Patrulla:</strong> {{ m.patrulla }}</p>
+        <div class="card-actions" style="display: flex; gap: 10px; margin-top: 15px;">
+          <button (click)="editarMuchacho(m)" class="btn-edit" style="background: #3498db; color: white; border: none; padding: 8px; border-radius: 4px; cursor: pointer;">✏️ Editar</button>
+          <button (click)="borrarMuchacho(m.id)" class="btn-delete" style="background: #e74c3c; color: white; border: none; padding: 8px; border-radius: 4px; cursor: pointer;">🗑️ Borrar</button>
+        </div>
+      </div>
+    </div>
   </div>
+
+  <!-- Dashboard de Estadísticas -->
+  <div class="reportes-section" style="margin-top: 50px; padding: 20px; background: #1a1a1a; border-radius: 12px; border: 1px solid #333;">
+    <h2 style="color: #fff; margin-bottom: 20px;">📊 Estadísticas del Grupo</h2>
+    <app-reportes></app-reportes>
+  </div>
+</div>
