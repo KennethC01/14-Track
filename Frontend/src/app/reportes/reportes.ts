@@ -37,32 +37,32 @@ export class ReportesComponent implements OnInit {
     console.log("Grupo detectado:", this.grupoActual);
   }
 
- async cargarDatos() {
-    try {
-      const coleccionNombre = this.grupoActual.toLowerCase() + '_lista';
-      const snapshot = await getDocs(collection(this.db, coleccionNombre));
-      const lista = snapshot.docs.map(doc => doc.data());
-      
-      console.log("Datos crudos de Firebase:", lista); 
-      
-      this.totalMuchachos = lista.length;
-      
-      // FILTRO INTELIGENTE:
-      // Aquí estamos revisando el objeto. 
-      // Si el campo se llama 'inscrito', úsalo. Si se llama distinto, cámbialo abajo:
-      this.inscritos = lista.filter((m: any) => {
-        // Imprime el valor de cada muchacho para identificar el campo
-        // console.log("Muchacho:", m); 
-        
-        // CORRECCIÓN: Ajusta 'inscrito' al nombre real de la propiedad que viste en el Array
-        return m.inscrito === true || m.inscrito === 'si' || m.inscrito === 'SÍ';
-      }).length;
-      
-      this.pendientes = this.totalMuchachos - this.inscritos;
-      this.porcentajeInscripcion = this.totalMuchachos > 0 ? (this.inscritos / this.totalMuchachos) * 100 : 0;
-      
-    } catch (error) {
-      console.error("ERROR CRÍTICO AL LEER FIRESTORE:", error);
-    }
+ // reportes.ts
+async cargarDatos() {
+  try {
+    const coleccionNombre = this.grupoActual.toLowerCase() + '_lista';
+    const snapshot = await getDocs(collection(this.db, coleccionNombre));
+    
+    // Convertimos los documentos a un array de datos
+    const lista = snapshot.docs.map(doc => doc.data());
+    
+    // Actualizamos las variables de clase directamente
+    this.totalMuchachos = lista.length;
+    
+    // Filtramos los inscritos donde la propiedad 'inscrito' sea exactamente true
+    this.inscritos = lista.filter((m: any) => m.inscrito === true).length;
+    
+    this.pendientes = this.totalMuchachos - this.inscritos;
+    
+    // Calculamos el porcentaje
+    this.porcentajeInscripcion = this.totalMuchachos > 0 
+      ? (this.inscritos / this.totalMuchachos) * 100 
+      : 0;
+
+    console.log("Total:", this.totalMuchachos, "Inscritos:", this.inscritos);
+    
+  } catch (error) {
+    console.error("Error al cargar datos:", error);
   }
+}
 }
