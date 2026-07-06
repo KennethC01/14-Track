@@ -1,9 +1,7 @@
 /* ==========================================
    CONFIGURACIÓN GENERAL
    ========================================== */
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
@@ -62,7 +60,7 @@ body {
 .btn-toggle-menu { background-color: #3a3a42; color: white; }
 
 /* ==========================================
-   TABLA DE CONTROL DE ASCENSO
+   TABLA DE CONTROL (Colores y líneas)
    ========================================== */
 .ascenso-tabla-container {
   width: 100%;
@@ -73,51 +71,40 @@ body {
   width: 100%;
   border-collapse: collapse;
   min-width: 600px;
+  background-color: #1e1e22; /* Color de fondo del contenedor de la tabla */
   border: 1px solid #2d2d34;
 }
 
 .ascenso-table th, 
 .ascenso-table td {
-  border: 1px solid #2d2d34;
+  border: 1px solid #2d2d34; /* Líneas de la tabla */
   padding: 12px 16px;
   text-align: center;
-  font-size: 14px;
 }
 
 .ascenso-table th {
-  background-color: #1e1e22;
+  background-color: #2d2d34; /* Cabecera con tono ligeramente diferente */
+  color: #ffffff;
   font-weight: 600;
-  color: #a1a1aa;
-}
-
-.ascenso-table td:first-child,
-.ascenso-table th:first-child {
-  text-align: left;
-}
-
-.ascenso-table tbody tr:nth-child(even) {
-  background-color: #1a1a1d;
 }
 
 /* ==========================================
-   BOTONES DE ELIMINAR (LA "X")
+   X PEQUEÑAS
    ========================================== */
 .ascenso-btn-delete {
   background: transparent;
-  border: none;
+  border: 1px solid #555;
   color: #ff4d4d;
   cursor: pointer;
-  font-size: 10px; /* X más pequeña */
+  font-size: 10px; 
   width: 18px;
   height: 18px;
   padding: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid #ff4d4d;
   border-radius: 3px;
   margin-left: 5px;
-  vertical-align: middle;
 }
 
 .ascenso-btn-delete:hover {
@@ -125,16 +112,10 @@ body {
   color: white;
 }
 
-/* ==========================================
-   RESPONSIVIDAD (ESCRITORIO)
-   ========================================== */
+/* RESPONSIVIDAD */
 @media (min-width: 600px) {
   .ascenso-header {
     flex-direction: row;
     justify-content: space-between;
-  }
-  .header-actions {
-    flex-wrap: nowrap;
-    width: auto;
   }
 }
