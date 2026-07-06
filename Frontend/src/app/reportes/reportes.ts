@@ -37,17 +37,23 @@ export class ReportesComponent implements OnInit {
   }
 
   async cargarDatos() {
-    try {
-      const coleccionNombre = this.grupoActual.toLowerCase() + '_lista';
-      const snapshot = await getDocs(collection(this.db, coleccionNombre));
-      const lista = snapshot.docs.map(doc => doc.data());
-      
-      this.totalMuchachos = lista.length;
-      this.inscritos = lista.filter((m: any) => m.inscrito === true || m.inscrito === 'si').length;
-      this.pendientes = this.totalMuchachos - this.inscritos;
-      this.porcentajeInscripcion = this.totalMuchachos > 0 ? (this.inscritos / this.totalMuchachos) * 100 : 0;
-    } catch (error) {
-      console.error("Error al cargar datos:", error);
+  try {
+    const coleccionNombre = this.grupoActual.toLowerCase() + '_lista';
+    console.log("Intentando conectar a la colección:", coleccionNombre);
+    
+    const coleccionRef = collection(this.db, coleccionNombre);
+    const snapshot = await getDocs(coleccionRef);
+    
+    console.log("Número de documentos encontrados:", snapshot.size);
+    
+    if (snapshot.size === 0) {
+      console.warn("ADVERTENCIA: La colección está vacía o no existe. Verifica el nombre en Firebase.");
     }
-  } // Esta llave cierra cargarDatos
-} // Esta llave cierra ReportesComponent
+
+    const lista = snapshot.docs.map(doc => doc.data());
+    this.totalMuchachos = lista.length;
+    // ... resto de tu lógica
+  } catch (error) {
+    console.error("ERROR CRÍTICO AL LEER FIRESTORE:", error);
+  }
+}
