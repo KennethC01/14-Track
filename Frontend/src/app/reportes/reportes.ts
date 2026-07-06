@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
-import { firebaseConfig } from '../firebase.config'; // Ajustado a '../'
+import { firebaseConfig } from '../firebase.config';
 
 @Component({
   selector: 'app-reportes',
@@ -34,27 +34,30 @@ export class ReportesComponent implements OnInit {
     const url = this.router.url;
     const partes = url.split('/');
     this.grupoActual = partes[1] || 'exploradores';
+    console.log("Grupo detectado:", this.grupoActual);
   }
 
   async cargarDatos() {
-  try {
-    const coleccionNombre = this.grupoActual.toLowerCase() + '_lista';
-    console.log("Intentando conectar a la colección:", coleccionNombre);
-    
-    const coleccionRef = collection(this.db, coleccionNombre);
-    const snapshot = await getDocs(coleccionRef);
-    
-    console.log("Número de documentos encontrados:", snapshot.size);
-    
-    if (snapshot.size === 0) {
-      console.warn("ADVERTENCIA: La colección está vacía o no existe. Verifica el nombre en Firebase.");
+    try {
+      const coleccionNombre = this.grupoActual.toLowerCase() + '_lista';
+      console.log("Intentando conectar a:", coleccionNombre);
+      
+      const snapshot = await getDocs(collection(this.db, coleccionNombre));
+      const lista = snapshot.docs.map(doc => doc.data());
+      
+      console.log("Datos crudos de Firebase:", lista); // REVISA ESTO EN LA CONSOLA
+      
+      this.totalMuchachos = lista.length;
+      
+      // AJUSTA ESTA LÍNEA SEGÚN EL NOMBRE DEL CAMPO EN TU BASE DE DATOS
+      // Si tu campo en Firebase se llama 'inscrito', asegúrate de que sea ese nombre exacto
+      this.inscritos = lista.filter((m: any) => m.inscrito === true || m.inscrito === 'si' || m.inscrito === 'SÍ').length;
+      
+      this.pendientes = this.totalMuchachos - this.inscritos;
+      this.porcentajeInscripcion = this.totalMuchachos > 0 ? (this.inscritos / this.totalMuchachos) * 100 : 0;
+      
+    } catch (error) {
+      console.error("ERROR CRÍTICO AL LEER FIRESTORE:", error);
     }
-
-    const lista = snapshot.docs.map(doc => doc.data());
-    this.totalMuchachos = lista.length;
-    // ... resto de tu lógica
-  } catch (error) {
-    console.error("ERROR CRÍTICO AL LEER FIRESTORE:", error);
   }
-}
 }
