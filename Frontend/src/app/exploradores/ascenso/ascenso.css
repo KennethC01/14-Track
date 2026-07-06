@@ -1,42 +1,48 @@
 /* ==========================================
    CONFIGURACIÓN GENERAL
    ========================================== */
-.ascenso-container {
-  padding: 32px;
-  background-color: #121214;
-  min-height: 100vh;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  color: #ffffff;
+* {
   box-sizing: border-box;
 }
 
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: #121214;
+  color: #ffffff;
+}
+
+.ascenso-container {
+  padding: 32px;
+  min-height: 100vh;
+}
+
 /* ==========================================
-   BOTONES DE CABECERA (Alineados y uniformes)
+   CABECERA
    ========================================== */
 .ascenso-header {
   display: flex;
-  flex-direction: column; /* Apila info y botones en móvil */
+  flex-direction: column;
   gap: 20px;
   background: #1e1e22;
   padding: 20px;
   border-radius: 12px;
   border: 1px solid #2d2d34;
+  margin-bottom: 24px;
 }
 
-/* Contenedor que agrupa todos los botones de acción */
 .header-actions {
   display: flex;
-  flex-wrap: wrap; /* Permite que salten a la siguiente fila si no caben */
+  flex-wrap: wrap;
   justify-content: center;
   gap: 10px;
   width: 100%;
 }
 
-/* Estilo unificado para TODOS los botones de la cabecera */
 .btn-header {
-  flex: 1 1 calc(33% - 10px); /* Intenta poner 3 en una fila */
+  flex: 1 1 calc(33% - 10px);
   min-width: 120px;
-  height: 45px; /* Más altura para el dedo */
+  height: 45px;
   padding: 0 12px;
   border-radius: 8px;
   font-size: 13px;
@@ -51,28 +57,84 @@
   white-space: nowrap;
 }
 
-/* Colores específicos */
 .btn-exportar { background-color: #28a745; color: white; }
 .btn-guardar { background-color: #007bff; color: white; }
 .btn-toggle-menu { background-color: #3a3a42; color: white; }
 
-/* Asegurar que el contenedor del menú no rompa el flex */
-.menu-columnas-container {
-  flex: 1 1 100%; /* El botón de añadir columna ocupará su propia fila si es necesario */
-  display: flex;
-  justify-content: center;
+/* ==========================================
+   TABLA DE CONTROL DE ASCENSO
+   ========================================== */
+.ascenso-tabla-container {
+  width: 100%;
+  overflow-x: auto;
 }
 
+.ascenso-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px;
+  border: 1px solid #2d2d34;
+}
+
+.ascenso-table th, 
+.ascenso-table td {
+  border: 1px solid #2d2d34;
+  padding: 12px 16px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.ascenso-table th {
+  background-color: #1e1e22;
+  font-weight: 600;
+  color: #a1a1aa;
+}
+
+.ascenso-table td:first-child,
+.ascenso-table th:first-child {
+  text-align: left;
+}
+
+.ascenso-table tbody tr:nth-child(even) {
+  background-color: #1a1a1d;
+}
+
+/* ==========================================
+   BOTONES DE ELIMINAR (LA "X")
+   ========================================== */
+.ascenso-btn-delete {
+  background: transparent;
+  border: none;
+  color: #ff4d4d;
+  cursor: pointer;
+  font-size: 10px; /* X más pequeña */
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #ff4d4d;
+  border-radius: 3px;
+  margin-left: 5px;
+  vertical-align: middle;
+}
+
+.ascenso-btn-delete:hover {
+  background-color: #ff4d4d;
+  color: white;
+}
+
+/* ==========================================
+   RESPONSIVIDAD (ESCRITORIO)
+   ========================================== */
 @media (min-width: 600px) {
   .ascenso-header {
-    flex-direction: row; /* En escritorio, pone la info a la izquierda y botones a la derecha */
+    flex-direction: row;
     justify-content: space-between;
   }
   .header-actions {
     flex-wrap: nowrap;
     width: auto;
-  }
-  .menu-columnas-container {
-    flex: auto;
   }
 }
