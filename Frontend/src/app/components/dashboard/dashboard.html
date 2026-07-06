@@ -1,4 +1,3 @@
-<!-- MANTENEMOS TU ESTRUCTURA DE CARGA Y NAVBAR IGUAL -->
 <div class="loading-screen" *ngIf="cargando">
   <div class="rosa-container">
     <img src="/icons/rosaNautica.png" alt="Rosa Náutica" class="rosa-giratoria">
@@ -18,9 +17,6 @@
 
   <main class="main-content">
     
-    <!-- ESTRUCTURA UNIFICADA PARA TODOS LOS GRUPOS CON EL ORDEN: INGRESO -> ASISTENCIA -> ASCENSO -->
-    
-    <!-- NAVEGANTES -->
     @if (grupoUsuario === 'NAVEGANTES') {
       <div class="welcome-banner navegantes">
         <h2>Módulo de Navegantes</h2>
@@ -45,10 +41,15 @@
           <p>Progreso de tus parches, especialidades náuticas y lecturas.</p>
           <div class="status-badge" routerLink="/navegantes/ascenso" style="cursor: pointer;">Registrar Ascenso</div>
         </div>
+        <div class="grid-card">
+          <div class="card-icon"><img src="/icons/grafico.png" alt="Icono Reporte" class="custom-icon"></div>
+          <h3>Reportería</h3>
+          <p>Estadísticas de inscripción y estado del grupo.</p>
+          <div class="status-badge" [routerLink]="['/navegantes/reportes']" style="cursor: pointer; background: #6f42c1;">Ver Reportes</div>
+        </div>
       </div>
     }
 
-    <!-- PIONEROS -->
     @else if (grupoUsuario === 'PIONEROS') {
       <div class="welcome-banner pioneros">
         <h2>Módulo de Pioneros</h2>
@@ -73,10 +74,15 @@
           <p>Evaluación de técnicas de supervivencia y devocionales.</p>
           <div class="status-badge" routerLink="/pioneros/ascenso" style="cursor: pointer;">Registrar Ascenso</div>
         </div>
+        <div class="grid-card">
+          <div class="card-icon"><img src="/icons/grafico.png" alt="Icono Reporte" class="custom-icon"></div>
+          <h3>Reportería</h3>
+          <p>Estadísticas de inscripción y estado del grupo.</p>
+          <div class="status-badge" [routerLink]="['/pioneros/reportes']" style="cursor: pointer; background: #6f42c1;">Ver Reportes</div>
+        </div>
       </div>
     }
 
-    <!-- SEGUIDORES -->
     @else if (grupoUsuario === 'SEGUIDORES') {
       <div class="welcome-banner seguidores">
         <h2>Módulo de Seguidores</h2>
@@ -101,10 +107,15 @@
           <p>Créditos acumulados en liderazgo, méritos y análisis bíblico.</p>
           <div class="status-badge" routerLink="/seguidores/ascenso" style="cursor: pointer;">Registrar Ascenso</div>
         </div>
+        <div class="grid-card">
+          <div class="card-icon"><img src="/icons/grafico.png" alt="Icono Reporte" class="custom-icon"></div>
+          <h3>Reportería</h3>
+          <p>Estadísticas de inscripción y estado del grupo.</p>
+          <div class="status-badge" [routerLink]="['/seguidores/reportes']" style="cursor: pointer; background: #6f42c1;">Ver Reportes</div>
+        </div>
       </div>
     }
 
-    <!-- EXPLORADORES -->
     @else if (grupoUsuario === 'EXPLORADORES') {
       <div class="welcome-banner exploradores">
         <h2>Módulo de Exploradores</h2>
@@ -129,10 +140,15 @@
           <p>Evaluación de premios de destrezas, liderazgo y retos espirituales.</p>
           <div class="status-badge" routerLink="/exploradores/ascenso" style="cursor: pointer;">Registrar Ascenso</div>
         </div>
+        <div class="grid-card">
+          <div class="card-icon"><img src="/icons/grafico.png" alt="Icono Reporte" class="custom-icon"></div>
+          <h3>Reportería</h3>
+          <p>Estadísticas de inscripción y estado del grupo.</p>
+          <div class="status-badge" [routerLink]="['/exploradores/reportes']" style="cursor: pointer; background: #6f42c1;">Ver Reportes</div>
+        </div>
       </div>
     }
 
-    <!-- ERROR SI NO HAY GRUPO -->
     @else {
       <div class="panel-card error-panel">
         <h2>⚠️ Estado de Cuenta Indefinido</h2>
