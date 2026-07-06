@@ -7,7 +7,7 @@ body {
   margin: 0;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background-color: #121214;
-  color: #ffffff;
+  color: #212121;
 }
 
 .ascenso-container {
@@ -84,7 +84,7 @@ body {
 
 .ascenso-table th {
   background-color: #2d2d34; /* Cabecera con tono ligeramente diferente */
-  color: #ffffff;
+  color: #242424;
   font-weight: 600;
 }
 
