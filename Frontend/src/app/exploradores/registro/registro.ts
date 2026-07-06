@@ -4,6 +4,7 @@ import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from 'firebase/firestore';
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage'; 
 import { firebaseConfig } from '../../firebase.config';
 
 @Component({
@@ -14,7 +15,7 @@ import { firebaseConfig } from '../../firebase.config';
   styleUrl: './registro.css'
 })
 export class RegistroComponent implements OnInit {
-  // Campos del formulario (Inicializados vacíos o con valores por defecto)
+  // Campos del formulario
   nuevoNombre: string = '';
   nuevoGrupo: string = 'EXPLORADORES'; 
   nuevaPatrulla: string = 'SIN PATRULLA';
@@ -25,6 +26,10 @@ export class RegistroComponent implements OnInit {
   nuevoNombrePadres: string = '';
   nuevoTelefonoPadres: string = '';
   nuevoInscrito: boolean = false;
+  
+  // Variables para fotos y almacenamiento
+  archivoSeleccionado: File | null = null;
+  private storage = getStorage();
   
   // Variables para Edición
   muchachoEnEdicion: any = null; 
@@ -70,7 +75,6 @@ export class RegistroComponent implements OnInit {
 
   prepararEdicion(m: any) {
     this.muchachoEnEdicion = m;
-    // Asignamos valores garantizando que no sean undefined
     this.nuevoNombre = m.nombre || '';
     this.nuevaIdentidad = m.identidad || '';
     this.nuevoTelefono = m.telefono || '';
@@ -82,40 +86,55 @@ export class RegistroComponent implements OnInit {
     this.textoBoton = 'Actualizar Muchacho';
   }
 
+  onFileSelected(event: any) {
+    this.archivoSeleccionado = event.target.files[0];
+  }
+
   async registrarMuchacho() {
     if (!this.nuevoNombre.trim()) return alert("El nombre es requerido");
 
-    // Construimos el objeto forzando valores para evitar el error de Firebase
-    const datosMuchacho = {
-      nombre: this.nuevoNombre,
-      grupo: this.nuevoGrupo,
-      patrulla: this.nuevaPatrulla,
-      avatar: this.nuevoAvatar,
-      identidad: this.nuevaIdentidad || '',
-      telefono: this.nuevoTelefono || '',
-      tipoSangre: this.nuevoTipoSangre || 'O+',
-      nombrePadres: this.nuevoNombrePadres || '',
-      telefonoPadres: this.nuevoTelefonoPadres || '',
-      inscrito: !!this.nuevoInscrito
-    };
-
     try {
+      let urlFoto = this.nuevoAvatar;
+
+      // Si hay un archivo nuevo, subir a Storage
+      if (this.archivoSeleccionado) {
+        const storageRef = ref(this.storage, `avatars/${Date.now()}_${this.archivoSeleccionado.name}`);
+        const snapshot = await uploadBytes(storageRef, this.archivoSeleccionado);
+        urlFoto = await getDownloadURL(snapshot.ref);
+      }
+
+      const datosMuchacho = {
+        nombre: this.nuevoNombre,
+        grupo: this.nuevoGrupo,
+        patrulla: this.nuevaPatrulla,
+        avatar: urlFoto,
+        identidad: this.nuevaIdentidad || '',
+        telefono: this.nuevoTelefono || '',
+        tipoSangre: this.nuevoTipoSangre || 'O+',
+        nombrePadres: this.nuevoNombrePadres || '',
+        telefonoPadres: this.nuevoTelefonoPadres || '',
+        inscrito: !!this.nuevoInscrito
+      };
+
       if (this.muchachoEnEdicion) {
         const docRef = doc(this.db, this.coleccionGrupo, this.muchachoEnEdicion.id);
         await updateDoc(docRef, datosMuchacho);
       } else {
         await addDoc(collection(this.db, this.coleccionGrupo), datosMuchacho);
       }
+      
       this.limpiarFormulario();
       this.obtenerMuchachos();
+      alert("Operación realizada con éxito");
     } catch (error) {
       console.error("Error al guardar:", error);
-      alert("Error al guardar: asegúrate de que todos los campos tengan datos válidos.");
+      alert("Error al guardar los datos.");
     }
   }
 
   limpiarFormulario() {
     this.muchachoEnEdicion = null;
+    this.archivoSeleccionado = null;
     this.textoBoton = 'Registrar Muchacho';
     this.nuevoNombre = '';
     this.nuevaIdentidad = '';

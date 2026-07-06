@@ -29,17 +29,17 @@
         <tbody>
           @for (m of muchachos; track m.id) {
             <tr>
-              <td class="user-cell">
-                @if (m.avatar && m.avatar !== 'boys/default.png') {
-                  <img [src]="m.avatar" [alt]="m.nombre" class="avatar-img">
-                } @else {
-                  <span class="avatar">👦</span>
-                }
-                <div>
-                  <p class="name">{{ m.nombre }}</p>
-                  <p class="role">{{ m.patrulla }}</p>
-                </div>
-              </td>
+            <td class="user-cell">
+  @if (m.avatar && m.avatar !== 'boys/default.png') {
+    <img [src]="m.avatar" [alt]="m.nombre" class="avatar-img" onerror="this.src='boys/default.png'">
+  } @else {
+    <span class="avatar">👦</span>
+  }
+  <div>
+    <p class="name">{{ m.nombre }}</p>
+    <p class="role">{{ m.patrulla }}</p>
+  </div>
+</td>
               <td>
                 <label class="switch">
                   <input type="checkbox" [(ngModel)]="m.asistio" (change)="actualizarConteo()">
