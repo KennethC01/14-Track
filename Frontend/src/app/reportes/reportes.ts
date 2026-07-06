@@ -31,13 +31,12 @@ export class ReportesComponent implements OnInit {
   }
 
  detectarGrupo() {
-    const url = this.router.url;
-    // Buscamos si la URL contiene el nombre del grupo
-    if (url.includes('navegantes')) this.grupoActual = 'navegantes';
-    else if (url.includes('pioneros')) this.grupoActual = 'pioneros';
-    else if (url.includes('seguidores')) this.grupoActual = 'seguidores';
-    else this.grupoActual = 'exploradores';
-  }
+  const url = this.router.url;
+  // Obtenemos el segmento de la URL que nos interesa
+  const partes = url.split('/');
+  this.grupoActual = partes[1] || 'exploradores'; 
+  console.log("Grupo detectado:", this.grupoActual);
+}
 
   async cargarDatos() {
     const coleccionNombre = this.grupoActual + '_lista';

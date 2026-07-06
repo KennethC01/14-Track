@@ -1,24 +1,25 @@
-<div class="reportes-container">
-  <button class="btn-back" routerLink="/dashboard">⬅️ Volver</button>
+<div class="report-container">
+  <button routerLink="/dashboard" class="btn-volver">⬅ Volver</button>
+  
   <h2>📊 Dashboard: {{ grupoActual | titlecase }}</h2>
 
-  <div class="dashboard-grid">
-    <div class="card">
-      <h4>Total Muchachos</h4>
-      <p class="big-number">{{ totalMuchachos }}</p>
+  <div class="stats-grid">
+    <div class="stat-card">
+      <h3>Total Muchachos</h3>
+      <p>{{ totalMuchachos }}</p>
     </div>
-    <div class="card">
-      <h4>Inscritos</h4>
-      <p class="big-number" style="color: #28a745;">{{ inscritos }}</p>
+    <div class="stat-card">
+      <h3>Inscritos</h3>
+      <p style="color: #28a745;">{{ inscritos }}</p>
     </div>
-    <div class="card">
-      <h4>Pendientes</h4>
-      <p class="big-number" style="color: #dc3545;">{{ pendientes }}</p>
+    <div class="stat-card">
+      <h3>Pendientes</h3>
+      <p style="color: #dc3545;">{{ pendientes }}</p>
     </div>
   </div>
 
-  <div class="card wide">
-    <h4>Progreso de Inscripción General</h4>
+  <div class="progress-container">
+    <h3>Progreso de Inscripción General</h3>
     <div class="progress-bar-bg">
       <div class="progress-bar-fill" [style.width.%]="porcentajeInscripcion"></div>
     </div>
