@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
-import { firebaseConfig } from '../firebase.config';
+import { firebaseConfig } from '../firebase.config'; // Ajustado a '../'
 
 @Component({
   selector: 'app-reportes',
@@ -30,34 +30,24 @@ export class ReportesComponent implements OnInit {
     await this.cargarDatos();
   }
 
- detectarGrupo() {
-  const url = this.router.url;
-  // Obtenemos el segmento de la URL que nos interesa
-  const partes = url.split('/');
-  this.grupoActual = partes[1] || 'exploradores'; 
-  console.log("Grupo detectado:", this.grupoActual);
-}
+  detectarGrupo() {
+    const url = this.router.url;
+    const partes = url.split('/');
+    this.grupoActual = partes[1] || 'exploradores';
+  }
 
   async cargarDatos() {
-  const coleccionNombre = this.grupoActual.toLowerCase() + '_lista';
-  console.log("Intentando leer de:", coleccionNombre); // <--- DEBERÍAS VER ESTO
-  
-  const snapshot = await getDocs(collection(this.db, coleccionNombre));
-  
-  // Imprime todos los documentos encontrados para ver qué contienen
-  const lista = snapshot.docs.map(doc => {
-    const data = doc.data();
-    console.log("Documento encontrado:", data); // <--- MIRA ESTO EN LA CONSOLA
-    return data;
-  });
-  
-  this.totalMuchachos = lista.length;
-  console.log("Total detectado:", this.totalMuchachos);
-  
-  // IMPORTANTE: Asegúrate de que el campo sea exactamente 'inscrito'
-  // Si en tu base de datos el campo se llama 'estado' o 'inscripcion', cámbialo aquí
-  this.inscritos = lista.filter((m: any) => m.inscrito === true || m.inscrito === 'si').length;
-  
-  this.pendientes = this.totalMuchachos - this.inscritos;
-  this.porcentajeInscripcion = this.totalMuchachos > 0 ? (this.inscritos / this.totalMuchachos) * 100 : 0;
-}
+    try {
+      const coleccionNombre = this.grupoActual.toLowerCase() + '_lista';
+      const snapshot = await getDocs(collection(this.db, coleccionNombre));
+      const lista = snapshot.docs.map(doc => doc.data());
+      
+      this.totalMuchachos = lista.length;
+      this.inscritos = lista.filter((m: any) => m.inscrito === true || m.inscrito === 'si').length;
+      this.pendientes = this.totalMuchachos - this.inscritos;
+      this.porcentajeInscripcion = this.totalMuchachos > 0 ? (this.inscritos / this.totalMuchachos) * 100 : 0;
+    } catch (error) {
+      console.error("Error al cargar datos:", error);
+    }
+  } // Esta llave cierra cargarDatos
+} // Esta llave cierra ReportesComponent
