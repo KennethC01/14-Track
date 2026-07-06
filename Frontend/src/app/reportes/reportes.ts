@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { initializeApp, getApps, getApp } from 'firebase/app';
@@ -20,7 +20,8 @@ export class ReportesComponent implements OnInit {
   porcentajeInscripcion: number = 0;
   private db: any;
 
-  constructor(private router: Router) {
+  // 1. Inyectamos ChangeDetectorRef aquí
+  constructor(private router: Router, private cdr: ChangeDetectorRef) {
     const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
     this.db = getFirestore(app);
   }
@@ -37,32 +38,28 @@ export class ReportesComponent implements OnInit {
     console.log("Grupo detectado:", this.grupoActual);
   }
 
- // reportes.ts
-async cargarDatos() {
-  try {
-    const coleccionNombre = this.grupoActual.toLowerCase() + '_lista';
-    const snapshot = await getDocs(collection(this.db, coleccionNombre));
-    
-    // Convertimos los documentos a un array de datos
-    const lista = snapshot.docs.map(doc => doc.data());
-    
-    // Actualizamos las variables de clase directamente
-    this.totalMuchachos = lista.length;
-    
-    // Filtramos los inscritos donde la propiedad 'inscrito' sea exactamente true
-    this.inscritos = lista.filter((m: any) => m.inscrito === true).length;
-    
-    this.pendientes = this.totalMuchachos - this.inscritos;
-    
-    // Calculamos el porcentaje
-    this.porcentajeInscripcion = this.totalMuchachos > 0 
-      ? (this.inscritos / this.totalMuchachos) * 100 
-      : 0;
+  async cargarDatos() {
+    try {
+      const coleccionNombre = this.grupoActual.toLowerCase() + '_lista';
+      const snapshot = await getDocs(collection(this.db, coleccionNombre));
+      
+      const lista = snapshot.docs.map(doc => doc.data());
+      
+      this.totalMuchachos = lista.length;
+      this.inscritos = lista.filter((m: any) => m.inscrito === true).length;
+      this.pendientes = this.totalMuchachos - this.inscritos;
+      
+      this.porcentajeInscripcion = this.totalMuchachos > 0 
+        ? (this.inscritos / this.totalMuchachos) * 100 
+        : 0;
 
-    console.log("Total:", this.totalMuchachos, "Inscritos:", this.inscritos);
-    
-  } catch (error) {
-    console.error("Error al cargar datos:", error);
+      console.log("Total:", this.totalMuchachos, "Inscritos:", this.inscritos);
+      
+      // 2. FORZAMOS la actualización de la vista
+      this.cdr.detectChanges();
+      
+    } catch (error) {
+      console.error("Error al cargar datos:", error);
+    }
   }
-}
 }
