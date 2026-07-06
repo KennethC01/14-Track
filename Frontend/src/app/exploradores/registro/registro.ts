@@ -4,7 +4,6 @@ import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from 'firebase/firestore';
-import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage'; 
 import { firebaseConfig } from '../../firebase.config';
 
 @Component({
@@ -19,17 +18,12 @@ export class RegistroComponent implements OnInit {
   nuevoNombre: string = '';
   nuevoGrupo: string = 'EXPLORADORES'; 
   nuevaPatrulla: string = 'SIN PATRULLA';
-  nuevoAvatar: string = 'boys/default.png';
   nuevaIdentidad: string = '';
   nuevoTelefono: string = '';
   nuevoTipoSangre: string = 'O+';
   nuevoNombrePadres: string = '';
   nuevoTelefonoPadres: string = '';
   nuevoInscrito: boolean = false;
-  
-  // Variables para fotos y almacenamiento
-  archivoSeleccionado: File | null = null;
-  private storage = getStorage();
   
   // Variables para Edición
   muchachoEnEdicion: any = null; 
@@ -86,28 +80,15 @@ export class RegistroComponent implements OnInit {
     this.textoBoton = 'Actualizar Muchacho';
   }
 
-  onFileSelected(event: any) {
-    this.archivoSeleccionado = event.target.files[0];
-  }
-
   async registrarMuchacho() {
     if (!this.nuevoNombre.trim()) return alert("El nombre es requerido");
 
     try {
-      let urlFoto = this.nuevoAvatar;
-
-      // Si hay un archivo nuevo, subir a Storage
-      if (this.archivoSeleccionado) {
-        const storageRef = ref(this.storage, `avatars/${Date.now()}_${this.archivoSeleccionado.name}`);
-        const snapshot = await uploadBytes(storageRef, this.archivoSeleccionado);
-        urlFoto = await getDownloadURL(snapshot.ref);
-      }
-
       const datosMuchacho = {
         nombre: this.nuevoNombre,
         grupo: this.nuevoGrupo,
         patrulla: this.nuevaPatrulla,
-        avatar: urlFoto,
+        avatar: 'boys/default.png', // Imagen estática por defecto
         identidad: this.nuevaIdentidad || '',
         telefono: this.nuevoTelefono || '',
         tipoSangre: this.nuevoTipoSangre || 'O+',
@@ -134,7 +115,6 @@ export class RegistroComponent implements OnInit {
 
   limpiarFormulario() {
     this.muchachoEnEdicion = null;
-    this.archivoSeleccionado = null;
     this.textoBoton = 'Registrar Muchacho';
     this.nuevoNombre = '';
     this.nuevaIdentidad = '';

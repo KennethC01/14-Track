@@ -64,34 +64,21 @@
         </select>
       </div>
 
-     <div class="form-group">
-  <label>Patrulla / cargo:</label>
-  <select [(ngModel)]="nuevaPatrulla" class="form-input">
-    <option value="ÁGUILAS">Águilas</option>
-    <option value="LOBOS">Lobos</option>
-    <option value="JAGUARES">Jaguares</option>
-    <option value="GUIA MAYOR">Guia Mayor</option>
-    <option value="GUIA MAYOR AUXILIAR">Guia Mayor Auxiliar</option>
-    <option value="Lider Juvenil">Lider Juvenil</option>
-    <option value="CAPELLAN AUXILIAR">Capellan Auxiliar</option>        
-    <option value="Especialista en Comunicaciones">Especialista en Comunicaciones</option>
-    <option value="Guia De Patrulla">Guia De Patrulla</option>
-    <option value="SIN PATRULLA">Sin Patrulla (General)</option>
-  </select>
-</div>
-
-     <div class="form-group">
-  <label>Foto del Muchacho:</label>
-  <input 
-    type="file" 
-    accept="image/*" 
-    capture="environment" 
-    (change)="onFileSelected($event)">
-  
-  <p *ngIf="archivoSeleccionado" style="font-size: 12px; color: #007bff;">
-    Archivo seleccionado: {{ archivoSeleccionado.name }}
-  </p>
-</div>
+      <div class="form-group">
+        <label>Patrulla / cargo:</label>
+        <select [(ngModel)]="nuevaPatrulla" class="form-input">
+          <option value="ÁGUILAS">Águilas</option>
+          <option value="LOBOS">Lobos</option>
+          <option value="JAGUARES">Jaguares</option>
+          <option value="GUIA MAYOR">Guia Mayor</option>
+          <option value="GUIA MAYOR AUXILIAR">Guia Mayor Auxiliar</option>
+          <option value="Lider Juvenil">Lider Juvenil</option>
+          <option value="CAPELLAN AUXILIAR">Capellan Auxiliar</option>        
+          <option value="Especialista en Comunicaciones">Especialista en Comunicaciones</option>
+          <option value="Guia De Patrulla">Guia De Patrulla</option>
+          <option value="SIN PATRULLA">Sin Patrulla (General)</option>
+        </select>
+      </div>
 
       <div class="form-group btn-container" style="grid-column: span 2;">
         <button class="btn-submit" (click)="registrarMuchacho()">💾 {{ textoBoton }}</button>
@@ -99,44 +86,4 @@
     </div>
   </div>
 
-  <div class="registro-card" style="margin-top: 2rem;">
-    <h3>📋 Muchachos Registrados en {{ nuevoGrupo | titlecase }}</h3>
-    <div class="tabla-scroll">
-      <table class="muchachos-table">
-        <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>Identidad</th>
-            <th>Inscrito</th>
-            <th>Sangre</th>
-            <th>Tel. Encargado</th>
-            <th>Patrulla</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (m of muchachosFiltrados; track m.id) {
-            <tr>
-              <td>{{ m.nombre }}</td>
-              <td>{{ m.identidad }}</td>
-              <td>{{ m.inscrito ? '✅' : '❌' }}</td>
-              <td>{{ m.tipoSangre }}</td>
-              <td>{{ m.telefonoPadres }}</td>
-              <td><span class="badge-patrulla">{{ m.patrulla }}</span></td>
-              <td class="td-center" style="display: flex; gap: 8px; justify-content: center;">
-                
-                <button class="btn-edit" (click)="prepararEdicion(m)" title="Editar muchacho">
-                  ✏️
-                </button>
-
-                <button class="btn-delete" (click)="eliminarMuchacho(m.id)" title="Eliminar muchacho">
-                  <img src="icons/trash.png" alt="Eliminar" class="icon-trash">
-                </button>
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
   </div>
-</div>
