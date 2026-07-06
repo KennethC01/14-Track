@@ -37,21 +37,26 @@ export class ReportesComponent implements OnInit {
     console.log("Grupo detectado:", this.grupoActual);
   }
 
-  async cargarDatos() {
+ async cargarDatos() {
     try {
       const coleccionNombre = this.grupoActual.toLowerCase() + '_lista';
-      console.log("Intentando conectar a:", coleccionNombre);
-      
       const snapshot = await getDocs(collection(this.db, coleccionNombre));
       const lista = snapshot.docs.map(doc => doc.data());
       
-      console.log("Datos crudos de Firebase:", lista); // REVISA ESTO EN LA CONSOLA
+      console.log("Datos crudos de Firebase:", lista); 
       
       this.totalMuchachos = lista.length;
       
-      // AJUSTA ESTA LÍNEA SEGÚN EL NOMBRE DEL CAMPO EN TU BASE DE DATOS
-      // Si tu campo en Firebase se llama 'inscrito', asegúrate de que sea ese nombre exacto
-      this.inscritos = lista.filter((m: any) => m.inscrito === true || m.inscrito === 'si' || m.inscrito === 'SÍ').length;
+      // FILTRO INTELIGENTE:
+      // Aquí estamos revisando el objeto. 
+      // Si el campo se llama 'inscrito', úsalo. Si se llama distinto, cámbialo abajo:
+      this.inscritos = lista.filter((m: any) => {
+        // Imprime el valor de cada muchacho para identificar el campo
+        // console.log("Muchacho:", m); 
+        
+        // CORRECCIÓN: Ajusta 'inscrito' al nombre real de la propiedad que viste en el Array
+        return m.inscrito === true || m.inscrito === 'si' || m.inscrito === 'SÍ';
+      }).length;
       
       this.pendientes = this.totalMuchachos - this.inscritos;
       this.porcentajeInscripcion = this.totalMuchachos > 0 ? (this.inscritos / this.totalMuchachos) * 100 : 0;
