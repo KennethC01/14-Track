@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
-import { firebaseConfig } from '../../firebase.config';
+import { firebaseConfig } from '../firebase.config';
 
 @Component({
   selector: 'app-reportes',
