@@ -57,3 +57,4 @@ export class ReportesComponent implements OnInit {
     console.error("ERROR CRÍTICO AL LEER FIRESTORE:", error);
   }
 }
+}
