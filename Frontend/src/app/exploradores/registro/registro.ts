@@ -25,9 +25,11 @@ export class RegistroComponent implements OnInit {
   nuevoTelefonoPadres: string = '';
   nuevoInscrito: boolean = false;
   
+  // Variables para Edición
   muchachoEnEdicion: any = null; 
   textoBoton: string = 'Registrar Muchacho';
 
+  // Configuración de base de datos
   coleccionGrupo: string = 'exploradores_lista'; 
   muchachos: any[] = []; 
   private db: any;
@@ -42,6 +44,7 @@ export class RegistroComponent implements OnInit {
     this.obtenerMuchachos();
   }
 
+  // Detecta el grupo de la URL y asigna la colección correcta
   detectarGrupoYColeccion() {
     const urlActual = this.router.url;
     if (urlActual.includes('navegantes')) {
@@ -55,6 +58,7 @@ export class RegistroComponent implements OnInit {
     }
   }
 
+  // Jala los datos de la colección detectada
   async obtenerMuchachos() {
     try {
       const querySnapshot = await getDocs(collection(this.db, this.coleccionGrupo));
@@ -66,6 +70,7 @@ export class RegistroComponent implements OnInit {
     }
   }
 
+  // Prepara el formulario para editar
   editarMuchacho(m: any) {
     this.muchachoEnEdicion = m;
     this.nuevoNombre = m.nombre || '';
@@ -79,6 +84,7 @@ export class RegistroComponent implements OnInit {
     this.textoBoton = 'Actualizar Muchacho';
   }
 
+  // Registra o Actualiza en la base de datos
   async registrarMuchacho() {
     if (!this.nuevoNombre.trim()) return alert("El nombre es requerido");
 
@@ -104,10 +110,11 @@ export class RegistroComponent implements OnInit {
       
       this.limpiarFormulario();
       this.obtenerMuchachos();
-      this.cdr.detectChanges(); // Refresca la vista
+      this.cdr.detectChanges();
       alert("Operación realizada con éxito");
     } catch (error) {
       console.error("Error al guardar:", error);
+      alert("Error al guardar en Firebase.");
     }
   }
 
