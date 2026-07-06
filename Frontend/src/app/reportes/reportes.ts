@@ -39,14 +39,25 @@ export class ReportesComponent implements OnInit {
 }
 
   async cargarDatos() {
-    const coleccionNombre = this.grupoActual + '_lista';
-    const snapshot = await getDocs(collection(this.db, coleccionNombre));
-    const lista = snapshot.docs.map(doc => doc.data());
-    
-    this.totalMuchachos = lista.length;
-    // Ajusta 'inscrito' según el nombre exacto de tu campo en Firebase (¿es booleano o string?)
-    this.inscritos = lista.filter((m: any) => m.inscrito === true || m.inscrito === 'si').length;
-    this.pendientes = this.totalMuchachos - this.inscritos;
-    this.porcentajeInscripcion = this.totalMuchachos > 0 ? (this.inscritos / this.totalMuchachos) * 100 : 0;
-  }
+  const coleccionNombre = this.grupoActual.toLowerCase() + '_lista';
+  console.log("Intentando leer de:", coleccionNombre); // <--- DEBERÍAS VER ESTO
+  
+  const snapshot = await getDocs(collection(this.db, coleccionNombre));
+  
+  // Imprime todos los documentos encontrados para ver qué contienen
+  const lista = snapshot.docs.map(doc => {
+    const data = doc.data();
+    console.log("Documento encontrado:", data); // <--- MIRA ESTO EN LA CONSOLA
+    return data;
+  });
+  
+  this.totalMuchachos = lista.length;
+  console.log("Total detectado:", this.totalMuchachos);
+  
+  // IMPORTANTE: Asegúrate de que el campo sea exactamente 'inscrito'
+  // Si en tu base de datos el campo se llama 'estado' o 'inscripcion', cámbialo aquí
+  this.inscritos = lista.filter((m: any) => m.inscrito === true || m.inscrito === 'si').length;
+  
+  this.pendientes = this.totalMuchachos - this.inscritos;
+  this.porcentajeInscripcion = this.totalMuchachos > 0 ? (this.inscritos / this.totalMuchachos) * 100 : 0;
 }
