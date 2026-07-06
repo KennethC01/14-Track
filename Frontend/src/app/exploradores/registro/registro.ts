@@ -6,7 +6,7 @@ import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { firebaseConfig } from '../../firebase.config';
 // 1. IMPORTA EL COMPONENTE DE REPORTES
-import { ReportesComponent } from '../reportes/reportes'; 
+import { ReportesComponent } from '../../reportes/reportes';
 
 @Component({
   selector: 'app-registro',
