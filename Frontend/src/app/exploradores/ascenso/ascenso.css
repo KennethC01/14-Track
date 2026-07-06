@@ -1,74 +1,77 @@
 /* ==========================================
-   ESTILO MINIMALISTA (Como en image_eee67b.png)
+   DISEÑO LIMPIO Y ORGANIZADO
    ========================================== */
-
-/* Fondo general */
 body {
   background-color: #121214;
   color: #ffffff;
-  font-family: sans-serif;
+  font-family: system-ui, sans-serif;
+  padding: 20px;
 }
 
-/* La cabecera (el recuadro oscuro superior) */
 .ascenso-header {
   background: #1e1e22;
   padding: 24px;
   border-radius: 12px;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 
-/* Tabla sin bordes (limpia) */
+/* Contenedor de la tabla con borde muy sutil */
+.ascenso-tabla-container {
+  background: #1e1e22;
+  border-radius: 12px;
+  overflow: hidden;
+  padding: 20px;
+}
+
 .ascenso-table {
   width: 100%;
   border-collapse: collapse;
   color: #ffffff;
 }
 
-/* Encabezados y celdas sin líneas */
+/* Líneas muy tenues solo en la parte inferior de las filas */
 .ascenso-table th, 
 .ascenso-table td {
-  padding: 12px 20px;
-  text-align: left; /* Alineado a la izquierda como en tu imagen */
-  border: none;
+  padding: 16px;
+  text-align: left;
+  border-bottom: 1px solid #2d2d34; 
 }
 
-/* Encabezados (Muchacho, Premios, etc) */
-.ascenso-table th {
-  font-weight: bold;
-  color: #ffffff;
-  vertical-align: bottom;
-}
-
-/* Estilo de la "X" pequeña en los encabezados */
-.ascenso-btn-delete {
-  background: #ffffff;
-  color: #000000;
-  border: none;
-  font-size: 10px;
-  padding: 1px 5px;
-  margin-left: 6px;
-  cursor: pointer;
-  border-radius: 2px;
-  font-weight: bold;
-}
-
-/* Alineación de las columnas de Premios */
-.ascenso-table td:nth-child(n+2), 
-.ascenso-table th:nth-child(n+2) {
+/* Alineación central para las columnas de checkboxes */
+.ascenso-table th:nth-child(n+2), 
+.ascenso-table td:nth-child(n+2) {
   text-align: center;
 }
 
-/* Checkboxes (estilo básico) */
-input[type="checkbox"] {
-  cursor: pointer;
-  transform: scale(1.2);
+/* Encabezados */
+.ascenso-table th {
+  color: #a1a1aa;
+  font-size: 13px;
+  text-transform: uppercase;
 }
 
-/* Ajustes de botones superiores */
-.btn-header {
-  border-radius: 6px;
-  padding: 10px 16px;
-  font-weight: 600;
+/* Nombres de los muchachos un poco más oscuros que el resto */
+.ascenso-table td:first-child {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+/* Botón de la X */
+.ascenso-btn-delete {
+  background: #2d2d34;
+  color: #ef4444;
   border: none;
+  font-size: 10px;
+  padding: 2px 6px;
+  margin-left: 8px;
   cursor: pointer;
+  border-radius: 4px;
+}
+
+/* Checkboxes */
+input[type="checkbox"] {
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+  accent-color: #007bff;
 }
