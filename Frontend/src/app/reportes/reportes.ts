@@ -30,31 +30,24 @@ export class ReportesComponent implements OnInit {
     await this.cargarDatos();
   }
 
-  detectarGrupo() {
+ detectarGrupo() {
     const url = this.router.url;
-    if (url.includes('navegantes')) this.grupoActual = 'NAVEGANTES';
-    else if (url.includes('pioneros')) this.grupoActual = 'PIONEROS';
-    else if (url.includes('seguidores')) this.grupoActual = 'SEGUIDORES';
-    else this.grupoActual = 'EXPLORADORES';
+    // Buscamos si la URL contiene el nombre del grupo
+    if (url.includes('navegantes')) this.grupoActual = 'navegantes';
+    else if (url.includes('pioneros')) this.grupoActual = 'pioneros';
+    else if (url.includes('seguidores')) this.grupoActual = 'seguidores';
+    else this.grupoActual = 'exploradores';
   }
 
   async cargarDatos() {
-  try {
-    const coleccionNombre = this.grupoActual.toLowerCase() + '_lista';
-    console.log("Buscando colección:", coleccionNombre); // Verifica esto en la consola del navegador (F12)
-    
+    const coleccionNombre = this.grupoActual + '_lista';
     const snapshot = await getDocs(collection(this.db, coleccionNombre));
-    
-    // Si la estructura en Firebase tiene un campo 'inscrito' (booleano o string)
     const lista = snapshot.docs.map(doc => doc.data());
     
     this.totalMuchachos = lista.length;
-    // Ajusta la condición según tu base de datos (ej: si el campo es string 'si', cámbialo)
+    // Ajusta 'inscrito' según el nombre exacto de tu campo en Firebase (¿es booleano o string?)
     this.inscritos = lista.filter((m: any) => m.inscrito === true || m.inscrito === 'si').length;
     this.pendientes = this.totalMuchachos - this.inscritos;
     this.porcentajeInscripcion = this.totalMuchachos > 0 ? (this.inscritos / this.totalMuchachos) * 100 : 0;
-  } catch (error) {
-    console.error("Error al cargar datos:", error);
   }
-}
 }
