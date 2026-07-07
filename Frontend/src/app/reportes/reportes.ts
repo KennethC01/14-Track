@@ -52,33 +52,38 @@ export class ReportesComponent implements OnInit, OnDestroy {
     this.grupoActual = encontrado || 'exploradores';
   }
 
-  iniciarSuscripcion() {
-    const base = this.grupoActual.toLowerCase();
-    const coleccionRef = collection(this.db, `${base}_lista`);
+ iniciarSuscripcion() {
+  const base = this.grupoActual.toLowerCase();
+  const coleccionRef = collection(this.db, `${base}_lista`);
 
-    this.unsubscribe = onSnapshot(coleccionRef, (snapshot) => {
-      this.listaMuchachos = snapshot.docs.map(doc => {
-        const data = doc.data();
-        
-        // Depuración: Verifica qué está llegando de Firebase
-        console.log("Datos recibidos de Firebase:", data);
-        
-        return {
-          id: doc.id,
-          nombre: data['nombre'] || 'Sin nombre',
-          asistencia: data['asistencia'] || 0, 
-          nivelAscenso: data['nivel'] || 'Iniciado',
-          porcentajeAscenso: data['progreso'] || 0,
-          estado: data['inscrito'] === true ? 'inscrito' : 'pendiente'
-        };
-      });
+  this.unsubscribe = onSnapshot(coleccionRef, (snapshot) => {
+    this.listaMuchachos = snapshot.docs.map(doc => {
+      const data = doc.data();
+      const infoAscenso = data['ascenso'] || {};
+      
+      // Contamos cuántas claves en 'ascenso' tienen el valor 'true'
+      const clavesCompletadas = Object.values(infoAscenso).filter(val => val === true).length;
+      const totalRequisitos = Object.keys(infoAscenso).length || 1; // Evitar división por cero
+      
+      // Calculamos porcentaje básico (puedes ajustar el 3 según cuántos requisitos existan)
+      const porcentaje = (clavesCompletadas / 3) * 100; 
 
-      this.totalMuchachos = this.listaMuchachos.length;
-      this.inscritos = this.listaMuchachos.filter(m => m.estado === 'inscrito').length;
-      this.pendientes = this.totalMuchachos - this.inscritos;
-      this.porcentajeInscripcion = this.totalMuchachos > 0 ? (this.inscritos / this.totalMuchachos) * 100 : 0;
-
-      this.cdr.detectChanges();
+      return {
+        id: doc.id,
+        nombre: data['nombre'] || 'Sin nombre',
+        asistencia: 0, // Nota: Si la asistencia no está aquí, necesitarás cargarla de otra colección
+        nivelAscenso: clavesCompletadas >= 3 ? 'Avanzado' : 'En proceso',
+        porcentajeAscenso: porcentaje,
+        estado: data['inscrito'] === true ? 'inscrito' : 'pendiente'
+      };
     });
-  }
+
+    this.totalMuchachos = this.listaMuchachos.length;
+    this.inscritos = this.listaMuchachos.filter(m => m.estado === 'inscrito').length;
+    this.pendientes = this.totalMuchachos - this.inscritos;
+    this.porcentajeInscripcion = this.totalMuchachos > 0 ? (this.inscritos / this.totalMuchachos) * 100 : 0;
+
+    this.cdr.detectChanges();
+  });
+}
 }
