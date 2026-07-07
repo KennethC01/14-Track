@@ -57,32 +57,30 @@ export class ReportesComponent implements OnInit, OnDestroy {
     const base = this.grupoActual.toLowerCase();
     const coleccionRef = collection(this.db, `${base}_lista`);
 
-    // onSnapshot mantiene la conexión abierta y escucha cambios
     this.unsubscribe = onSnapshot(coleccionRef, (snapshot) => {
       this.listaMuchachos = snapshot.docs.map(doc => {
         const data = doc.data();
+        
+        // --- AGREGA ESTO PARA DEPURAR ---
+        console.log("Datos de", data['nombre'], ":", data);
+        // --------------------------------
+        
         return {
           id: doc.id,
           nombre: data['nombre'] || 'Sin nombre',
-          asistencia: data['asistencia'] || 0,
+          // Asegúrate de que estos nombres coincidan EXACTAMENTE con los de tu BD
+          asistencia: data['asistencia'] || 0, 
           nivelAscenso: data['nivel'] || 'Iniciado',
           porcentajeAscenso: data['progreso'] || 0,
           estado: data['inscrito'] === true ? 'inscrito' : 'pendiente'
         };
       });
 
-      // Recalcular métricas al recibir nuevos datos
       this.totalMuchachos = this.listaMuchachos.length;
       this.inscritos = this.listaMuchachos.filter(m => m.estado === 'inscrito').length;
       this.pendientes = this.totalMuchachos - this.inscritos;
-      this.porcentajeInscripcion = this.totalMuchachos > 0 
-        ? (this.inscritos / this.totalMuchachos) * 100 
-        : 0;
+      this.porcentajeInscripcion = this.totalMuchachos > 0 ? (this.inscritos / this.totalMuchachos) * 100 : 0;
 
-      // Forzar actualización de la vista
       this.cdr.detectChanges();
-    }, (error) => {
-      console.error("Error al escuchar cambios en tiempo real:", error);
     });
   }
-}
