@@ -15,13 +15,15 @@ import { firebaseConfig } from '../firebase.config';
 export class ReportesComponent implements OnInit {
   grupoActual: string = '';
   
-  // Métricas
+  // Métricas para el Dashboard
   totalMuchachos: number = 0;
   inscritos: number = 0;
   pendientes: number = 0;
   porcentajeInscripcion: number = 0;
-  progresoAscenso: number = 0;
-  promedioAsistencia: number = 0;
+  
+  // Lista para la tabla
+  listaMuchachos: any[] = [];
+  totalReuniones: number = 10; // Puedes ajustarlo dinámicamente si tienes una colección de reuniones
 
   private db: any;
 
@@ -39,8 +41,6 @@ export class ReportesComponent implements OnInit {
     const url = this.router.url;
     const gruposValidos = ['exploradores', 'navegantes', 'pioneros', 'seguidores'];
     const partes = url.split('/');
-    
-    // Identifica el grupo en la URL
     const encontrado = partes.find(p => gruposValidos.includes(p.toLowerCase()));
     this.grupoActual = encontrado || 'exploradores';
   }
@@ -49,27 +49,30 @@ export class ReportesComponent implements OnInit {
     try {
       const base = this.grupoActual.toLowerCase();
       
-      // 1. Carga de Inscripción (Colección: grupo_lista)
+      // Carga de la lista principal de muchachos
       const snapInsc = await getDocs(collection(this.db, `${base}_lista`));
-      const listaInsc = snapInsc.docs.map(doc => doc.data());
-      this.totalMuchachos = listaInsc.length;
-      this.inscritos = listaInsc.filter((m: any) => m.inscrito === true).length;
+      
+      this.listaMuchachos = snapInsc.docs.map(doc => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          nombre: data['nombre'] || 'Sin nombre',
+          asistencia: data['asistencia'] || 0,
+          nivelAscenso: data['nivel'] || 'Iniciado',
+          porcentajeAscenso: data['progreso'] || 0, // Espera un valor de 0 a 100
+          estado: data['inscrito'] === true ? 'inscrito' : 'pendiente'
+        };
+      });
+
+      // Cálculo de métricas basadas en la lista procesada
+      this.totalMuchachos = this.listaMuchachos.length;
+      this.inscritos = this.listaMuchachos.filter(m => m.estado === 'inscrito').length;
       this.pendientes = this.totalMuchachos - this.inscritos;
-      this.porcentajeInscripcion = this.totalMuchachos > 0 ? (this.inscritos / this.totalMuchachos) * 100 : 0;
+      this.porcentajeInscripcion = this.totalMuchachos > 0 
+        ? (this.inscritos / this.totalMuchachos) * 100 
+        : 0;
 
-      // 2. Carga de Ascenso (Colección: grupo_ascenso)
-      const snapAsc = await getDocs(collection(this.db, `${base}_ascenso`));
-      const listaAsc = snapAsc.docs.map(doc => doc.data());
-      const sumaProgreso = listaAsc.reduce((acc, curr) => acc + (curr['progreso'] || 0), 0);
-      this.progresoAscenso = listaAsc.length > 0 ? Math.round(sumaProgreso / listaAsc.length) : 0;
-
-      // 3. Carga de Asistencia (Colección: grupo_asistencia)
-      const snapAsis = await getDocs(collection(this.db, `${base}_asistencia`));
-      const listaAsis = snapAsis.docs.map(doc => doc.data());
-      const sumaAsis = listaAsis.reduce((acc, curr) => acc + (curr['porcentaje'] || 0), 0);
-      this.promedioAsistencia = listaAsis.length > 0 ? Math.round(sumaAsis / listaAsis.length) : 0;
-
-      // Fuerza la actualización de la vista
+      // Notificar al componente que los datos han cambiado
       this.cdr.detectChanges();
       
     } catch (error) {

@@ -25,4 +25,47 @@
     </div>
     <p>{{ porcentajeInscripcion | number:'1.0-0' }}% de los muchachos están inscritos.</p>
   </div>
+
+  <div class="details-section">
+    <h3>Detalle de Muchachos</h3>
+    <div class="table-responsive">
+      <table class="report-table">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Asistencia</th>
+            <th>Ascenso</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let m of listaMuchachos">
+            <td>{{ m.nombre }}</td>
+            
+            <td>
+              <div class="progress-wrapper">
+                <small>{{ m.asistencia }} / {{ totalReuniones }}</small>
+                <div class="mini-bar">
+                  <div class="fill" [style.width.%]="(m.asistencia / totalReuniones) * 100"></div>
+                </div>
+              </div>
+            </td>
+
+            <td>
+              <div class="progress-wrapper">
+                <small>{{ m.nivelAscenso }}</small>
+                <div class="mini-bar">
+                  <div class="fill" [style.width.%]="m.porcentajeAscenso" style="background-color: #ffc107;"></div>
+                </div>
+              </div>
+            </td>
+
+            <td>
+              <span class="status-badge" [ngClass]="m.estado.toLowerCase()">{{ m.estado }}</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
