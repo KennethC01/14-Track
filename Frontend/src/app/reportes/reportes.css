@@ -100,4 +100,4 @@
   text-transform: uppercase; 
 }
 .status-badge.inscrito { background: #2a9d8f; color: white; }
-.status-badge.pendiente { background: #e76f51; color: white; }
+.status-badge.pendiente { background: #fa0000; color: white; }
