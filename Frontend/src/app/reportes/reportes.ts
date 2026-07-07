@@ -23,10 +23,11 @@ export class ReportesComponent implements OnInit, OnDestroy {
   
   // Lista para la tabla
   listaMuchachos: any[] = [];
-  totalReuniones: number = 10; 
+  totalReuniones: number = 10; // Ajusta según tu necesidad
 
   private db: any;
-  private unsubscribe: Unsubscribe | null = null;
+  private unsubscribeLista: Unsubscribe | null = null;
+  private unsubscribeAsis: Unsubscribe | null = null;
 
   constructor(private router: Router, private cdr: ChangeDetectorRef) {
     const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
@@ -35,13 +36,12 @@ export class ReportesComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.detectarGrupo();
-    this.iniciarSuscripcion();
+    this.iniciarSuscripciones();
   }
 
   ngOnDestroy() {
-    if (this.unsubscribe) {
-      this.unsubscribe();
-    }
+    if (this.unsubscribeLista) this.unsubscribeLista();
+    if (this.unsubscribeAsis) this.unsubscribeAsis();
   }
 
   detectarGrupo() {
@@ -52,38 +52,52 @@ export class ReportesComponent implements OnInit, OnDestroy {
     this.grupoActual = encontrado || 'exploradores';
   }
 
- iniciarSuscripcion() {
-  const base = this.grupoActual.toLowerCase();
-  const coleccionRef = collection(this.db, `${base}_lista`);
+  iniciarSuscripciones() {
+    const base = this.grupoActual.toLowerCase();
+    const refLista = collection(this.db, `${base}_lista`);
+    const refAsistencia = collection(this.db, `${base}_asistencia`);
 
-  this.unsubscribe = onSnapshot(coleccionRef, (snapshot) => {
-    this.listaMuchachos = snapshot.docs.map(doc => {
-      const data = doc.data();
-      const infoAscenso = data['ascenso'] || {};
-      
-      // Contamos cuántas claves en 'ascenso' tienen el valor 'true'
-      const clavesCompletadas = Object.values(infoAscenso).filter(val => val === true).length;
-      const totalRequisitos = Object.keys(infoAscenso).length || 1; // Evitar división por cero
-      
-      // Calculamos porcentaje básico (puedes ajustar el 3 según cuántos requisitos existan)
-      const porcentaje = (clavesCompletadas / 3) * 100; 
+    let cacheLista: any[] = [];
+    let cacheAsistencia: any = {};
 
-      return {
-        id: doc.id,
-        nombre: data['nombre'] || 'Sin nombre',
-        asistencia: 0, // Nota: Si la asistencia no está aquí, necesitarás cargarla de otra colección
-        nivelAscenso: clavesCompletadas >= 3 ? 'Avanzado' : 'En proceso',
-        porcentajeAscenso: porcentaje,
-        estado: data['inscrito'] === true ? 'inscrito' : 'pendiente'
-      };
+    const actualizarVista = () => {
+      this.listaMuchachos = cacheLista.map(doc => {
+        const data = doc.data();
+        const infoAscenso = data['ascenso'] || {};
+        const clavesCompletadas = Object.values(infoAscenso).filter(val => val === true).length;
+        
+        // Obtenemos la asistencia del mapa de caché
+        const asistenciaData = cacheAsistencia[doc.id] || { total: 0 };
+
+        return {
+          id: doc.id,
+          nombre: data['nombre'] || 'Sin nombre',
+          asistencia: asistenciaData['total'] || 0, // Ajusta 'total' si tu campo en BD se llama diferente
+          nivelAscenso: clavesCompletadas >= 3 ? 'Avanzado' : 'En proceso',
+          porcentajeAscenso: (clavesCompletadas / 3) * 100,
+          estado: data['inscrito'] === true ? 'inscrito' : 'pendiente'
+        };
+      });
+
+      this.totalMuchachos = this.listaMuchachos.length;
+      this.inscritos = this.listaMuchachos.filter(m => m.estado === 'inscrito').length;
+      this.pendientes = this.totalMuchachos - this.inscritos;
+      this.porcentajeInscripcion = this.totalMuchachos > 0 ? (this.inscritos / this.totalMuchachos) * 100 : 0;
+      this.cdr.detectChanges();
+    };
+
+    // Suscripción a lista
+    this.unsubscribeLista = onSnapshot(refLista, (snap) => {
+      cacheLista = snap.docs;
+      actualizarVista();
     });
 
-    this.totalMuchachos = this.listaMuchachos.length;
-    this.inscritos = this.listaMuchachos.filter(m => m.estado === 'inscrito').length;
-    this.pendientes = this.totalMuchachos - this.inscritos;
-    this.porcentajeInscripcion = this.totalMuchachos > 0 ? (this.inscritos / this.totalMuchachos) * 100 : 0;
-
-    this.cdr.detectChanges();
-  });
-}
+    // Suscripción a asistencia
+    this.unsubscribeAsis = onSnapshot(refAsistencia, (snap) => {
+      snap.docs.forEach(doc => {
+        cacheAsistencia[doc.id] = doc.data();
+      });
+      actualizarVista();
+    });
+  }
 }
