@@ -26,7 +26,7 @@ export class ReportesComponent implements OnInit, OnDestroy {
   totalReuniones: number = 10; 
 
   private db: any;
-  private unsubscribe: Unsubscribe | null = null; // Para limpiar la suscripción
+  private unsubscribe: Unsubscribe | null = null;
 
   constructor(private router: Router, private cdr: ChangeDetectorRef) {
     const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
@@ -38,7 +38,6 @@ export class ReportesComponent implements OnInit, OnDestroy {
     this.iniciarSuscripcion();
   }
 
-  // Se ejecuta al salir del componente para evitar fugas de memoria
   ngOnDestroy() {
     if (this.unsubscribe) {
       this.unsubscribe();
@@ -61,14 +60,12 @@ export class ReportesComponent implements OnInit, OnDestroy {
       this.listaMuchachos = snapshot.docs.map(doc => {
         const data = doc.data();
         
-        // --- AGREGA ESTO PARA DEPURAR ---
-        console.log("Datos de", data['nombre'], ":", data);
-        // --------------------------------
+        // Depuración: Verifica qué está llegando de Firebase
+        console.log("Datos recibidos de Firebase:", data);
         
         return {
           id: doc.id,
           nombre: data['nombre'] || 'Sin nombre',
-          // Asegúrate de que estos nombres coincidan EXACTAMENTE con los de tu BD
           asistencia: data['asistencia'] || 0, 
           nivelAscenso: data['nivel'] || 'Iniciado',
           porcentajeAscenso: data['progreso'] || 0,
@@ -84,3 +81,4 @@ export class ReportesComponent implements OnInit, OnDestroy {
       this.cdr.detectChanges();
     });
   }
+}
