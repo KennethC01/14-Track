@@ -52,27 +52,34 @@ export class ReportesComponent implements OnInit, OnDestroy {
     this.grupoActual = encontrado || 'exploradores';
   }
 
-  iniciarSuscripciones() {
+ iniciarSuscripciones() {
     const base = this.grupoActual.toLowerCase();
     const refLista = collection(this.db, `${base}_lista`);
-    const refAsistencia = collection(this.db, `${base}_asistencia`);
+    const refAsistencia = collection(this.db, `asistencia_${base}`);
 
     let cacheLista: any[] = [];
-    let cacheAsistencia: any = {};
+    let cacheAsistencia: any[] = []; // Guardaremos todos los documentos de asistencia aquí
 
     const actualizarVista = () => {
       this.listaMuchachos = cacheLista.map(doc => {
         const data = doc.data();
         const infoAscenso = data['ascenso'] || {};
         const clavesCompletadas = Object.values(infoAscenso).filter(val => val === true).length;
-        
-        // Obtenemos la asistencia del mapa de caché
-        const asistenciaData = cacheAsistencia[doc.id] || { total: 0 };
+
+        // CONTAR ASISTENCIAS: 
+        // Filtramos cuántas veces aparece el id del muchacho en la lista de todos los días
+        let asistenciasContadas = 0;
+        cacheAsistencia.forEach(asisDoc => {
+          const lista = asisDoc.data()['listaAsistentes'] || [];
+          if (lista.some((m: any) => m.id === doc.id)) {
+            asistenciasContadas++;
+          }
+        });
 
         return {
           id: doc.id,
           nombre: data['nombre'] || 'Sin nombre',
-          asistencia: asistenciaData['total'] || 0, // Ajusta 'total' si tu campo en BD se llama diferente
+          asistencia: asistenciasContadas, 
           nivelAscenso: clavesCompletadas >= 3 ? 'Avanzado' : 'En proceso',
           porcentajeAscenso: (clavesCompletadas / 3) * 100,
           estado: data['inscrito'] === true ? 'inscrito' : 'pendiente'
@@ -86,17 +93,13 @@ export class ReportesComponent implements OnInit, OnDestroy {
       this.cdr.detectChanges();
     };
 
-    // Suscripción a lista
     this.unsubscribeLista = onSnapshot(refLista, (snap) => {
       cacheLista = snap.docs;
       actualizarVista();
     });
 
-    // Suscripción a asistencia
     this.unsubscribeAsis = onSnapshot(refAsistencia, (snap) => {
-      snap.docs.forEach(doc => {
-        cacheAsistencia[doc.id] = doc.data();
-      });
+      cacheAsistencia = snap.docs;
       actualizarVista();
     });
   }
