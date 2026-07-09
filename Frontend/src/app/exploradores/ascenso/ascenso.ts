@@ -134,7 +134,7 @@ export class AscensoComponent implements OnInit {
 
     try {
       // 1. Cargar la plantilla desde assets
-      const response = await fetch('/assets/plantilla_ascenso.xlsx');
+      const response = await fetch('/plantilla_ascenso.xlsx');
       const arrayBuffer = await response.arrayBuffer();
       
       // 2. Leer la plantilla
