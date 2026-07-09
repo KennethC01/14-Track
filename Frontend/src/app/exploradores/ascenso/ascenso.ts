@@ -129,43 +129,50 @@ export class AscensoComponent implements OnInit {
     }
   }
 
-  exportarAExcel() {
+  async exportarAExcel() {
     if (this.muchachos.length === 0) return;
 
-    // 1. Definimos las etiquetas de las columnas en el orden que queremos
-    const todasLasColumnas = [
-      ...this.premiosDestreza, 
-      ...this.liderazgoColumnas, 
-      ...this.estudiosBiblicos
-    ];
-    
-    // Este es el orden exacto que queremos: Nombre primero, luego el resto
-    const encabezados = ['NOMBRE DEL MUCHACHO', ...todasLasColumnas.map(c => c.label)];
+    try {
+      // 1. Cargar la plantilla desde assets
+      const response = await fetch('/assets/plantilla_ascenso.xlsx');
+      const arrayBuffer = await response.arrayBuffer();
+      
+      // 2. Leer la plantilla
+      const wb = XLSX.read(arrayBuffer, { type: 'array' });
+      const ws = wb.Sheets[wb.SheetNames[0]]; // Usamos la primera hoja
 
-    // 2. Mapeamos los datos
-    const datosParaExportar = this.muchachos.map(m => {
-      const fila: any = { 'NOMBRE DEL MUCHACHO': m.nombre };
-      todasLasColumnas.forEach(col => {
-        fila[col.label] = m.ascenso[col.id] ? 'X' : '';
+      // 3. Preparar los datos
+      const todasLasColumnas = [
+        ...this.premiosDestreza, 
+        ...this.liderazgoColumnas, 
+        ...this.estudiosBiblicos
+      ];
+      
+      // Fila donde empiezan los nombres (Ajusta este número si tu plantilla empieza distinto)
+      let filaInicio = 5; 
+
+      // 4. Inyectar datos en la plantilla
+      this.muchachos.forEach((m, index) => {
+        const filaActual = filaInicio + index;
+        
+        // Escribir nombre en la columna A
+        XLSX.utils.sheet_add_aoa(ws, [[m.nombre]], { origin: `A${filaActual}` });
+        
+        // Escribir las marcas en las columnas siguientes (B, C, D...)
+        todasLasColumnas.forEach((col, colIndex) => {
+          const valor = m.ascenso[col.id] ? 'X' : '';
+          const celdaRef = XLSX.utils.encode_cell({ r: filaActual - 1, c: colIndex + 1 });
+          XLSX.utils.sheet_add_aoa(ws, [[valor]], { origin: celdaRef });
+        });
       });
-      return fila;
-    });
 
-    // 3. Creamos la hoja usando la propiedad 'header' para forzar el orden
-    const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(datosParaExportar, { 
-      header: encabezados 
-    });
-
-    // 4. Ajustamos anchos
-    ws['!cols'] = [
-      { wch: 30 }, 
-      ...todasLasColumnas.map(() => ({ wch: 15 }))
-    ];
-
-    const wb: XLSX.WorkBook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Control de Ascenso');
-
-    XLSX.writeFile(wb, `Ascenso_${this.grupoActual}_${new Date().toLocaleDateString()}.xlsx`);
+      // 5. Descargar el archivo
+      XLSX.writeFile(wb, `Ascenso_${this.grupoActual}_${new Date().toLocaleDateString()}.xlsx`);
+      
+    } catch (error) {
+      console.error("❌ Error al exportar con plantilla:", error);
+      alert("No se pudo cargar la plantilla. Verifica que el archivo '/assets/plantilla_ascenso.xlsx' exista.");
+    }
   }
   
   async agregarColumna(tipo: string) {
