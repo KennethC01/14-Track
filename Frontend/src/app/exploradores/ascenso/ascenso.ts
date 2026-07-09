@@ -89,49 +89,53 @@ export class AscensoComponent implements OnInit {
     }
   }
 
-  async exportarAExcel() {
+ async exportarAExcel() {
     if (this.muchachos.length === 0) return;
+
     try {
-      const response = await fetch('/Plantilla_ascenso.xlsx'); 
+      const response = await fetch('/Plantilla_ascenso.xlsx');
       const arrayBuffer = await response.arrayBuffer();
-      const wb = XLSX.read(new Uint8Array(arrayBuffer), { type: 'array' });
+      
+      // 1. Leer el archivo como un WorkBook completo
+      const wb = XLSX.read(new Uint8Array(arrayBuffer), { type: 'array', cellStyles: true });
       const ws = wb.Sheets[wb.SheetNames[0]];
+
       const todasLasColumnas = [...this.premiosDestreza, ...this.liderazgoColumnas, ...this.estudiosBiblicos];
       let filaInicio = 3; 
 
+      // 2. Insertar valores manteniendo los estilos de las celdas existentes
       this.muchachos.forEach((m, index) => {
         const filaActual = filaInicio + index;
-        XLSX.utils.sheet_add_aoa(ws, [[m.nombre]], { origin: `A${filaActual}` });
+        
+        // Función auxiliar para escribir sin sobrescribir estilos
+        const writeCell = (addr: string, val: any) => {
+          if (!ws[addr]) ws[addr] = { t: 's', v: val };
+          else ws[addr].v = val;
+        };
+
+        writeCell(`A${filaActual}`, m.nombre);
+        
         todasLasColumnas.forEach((col, colIndex) => {
           const valor = m.ascenso[col.id] ? 'X' : '';
           const celdaRef = XLSX.utils.encode_cell({ r: filaActual - 1, c: colIndex + 1 });
-          XLSX.utils.sheet_add_aoa(ws, [[valor]], { origin: celdaRef });
+          writeCell(celdaRef, valor);
         });
       });
-      XLSX.writeFile(wb, `Ascenso_${this.grupoActual}.xlsx`);
+
+      // 3. Escribir usando la opción 'bookType: "xlsx"' para preservar la estructura
+      const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array', cellStyles: true });
+      
+      // 4. Crear un Blob para la descarga
+      const data = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const url = window.URL.createObjectURL(data);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Ascenso_${this.grupoActual}.xlsx`;
+      a.click();
+      
     } catch (error) {
-      console.error("❌ Error:", error);
-      alert("No se pudo cargar la plantilla. Verifica que el archivo esté en la carpeta public.");
+      console.error("❌ Error al exportar:", error);
+      alert("No se pudo mantener el diseño de la plantilla.");
     }
-  }
-
-  async agregarColumna(tipo: string) {
-    const nombre = prompt(`Nombre del nuevo ${tipo}:`);
-    if (!nombre) return;
-    const nuevaCol = { id: `${tipo}_${Date.now()}`, label: nombre.toUpperCase() };
-    if (tipo === 'destreza') this.premiosDestreza.push(nuevaCol);
-    if (tipo === 'liderazgo') this.liderazgoColumnas.push(nuevaCol);
-    if (tipo === 'biblico') this.estudiosBiblicos.push(nuevaCol);
-    await this.guardarConfiguracionColumnas();
-    this.cdr.detectChanges();
-  }
-
-  async eliminarColumna(id: string, tipo: string, label: string) {
-    if (!confirm(`¿Eliminar la columna "${label}"?`)) return;
-    if (tipo === 'destreza') this.premiosDestreza = this.premiosDestreza.filter(c => c.id !== id);
-    if (tipo === 'liderazgo') this.liderazgoColumnas = this.liderazgoColumnas.filter(c => c.id !== id);
-    if (tipo === 'biblico') this.estudiosBiblicos = this.estudiosBiblicos.filter(c => c.id !== id);
-    await this.guardarConfiguracionColumnas();
-    this.cdr.detectChanges();
   }
 }
