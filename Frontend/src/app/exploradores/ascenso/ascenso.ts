@@ -129,74 +129,48 @@ export class AscensoComponent implements OnInit {
     }
   }
 
-  async exportarAExcel() {
-    if (this.muchachos.length === 0) return;
+ async exportarAExcel() {
+  if (this.muchachos.length === 0) return;
 
-    try {
-      // 1. Cargar la plantilla desde assets
-      const response = await fetch('/plantilla_ascenso.xlsx');
-      const arrayBuffer = await response.arrayBuffer();
-      
-      // 2. Leer la plantilla
-      const wb = XLSX.read(arrayBuffer, { type: 'array' });
-      const ws = wb.Sheets[wb.SheetNames[0]]; // Usamos la primera hoja
-
-      // 3. Preparar los datos
-      const todasLasColumnas = [
-        ...this.premiosDestreza, 
-        ...this.liderazgoColumnas, 
-        ...this.estudiosBiblicos
-      ];
-      
-      // Fila donde empiezan los nombres (Ajusta este número si tu plantilla empieza distinto)
-      let filaInicio = 5; 
-
-      // 4. Inyectar datos en la plantilla
-      this.muchachos.forEach((m, index) => {
-        const filaActual = filaInicio + index;
-        
-        // Escribir nombre en la columna A
-        XLSX.utils.sheet_add_aoa(ws, [[m.nombre]], { origin: `A${filaActual}` });
-        
-        // Escribir las marcas en las columnas siguientes (B, C, D...)
-        todasLasColumnas.forEach((col, colIndex) => {
-          const valor = m.ascenso[col.id] ? 'X' : '';
-          const celdaRef = XLSX.utils.encode_cell({ r: filaActual - 1, c: colIndex + 1 });
-          XLSX.utils.sheet_add_aoa(ws, [[valor]], { origin: celdaRef });
-        });
-      });
-
-      // 5. Descargar el archivo
-      XLSX.writeFile(wb, `Ascenso_${this.grupoActual}_${new Date().toLocaleDateString()}.xlsx`);
-      
-    } catch (error) {
-      console.error("❌ Error al exportar con plantilla:", error);
-      alert("No se pudo cargar la plantilla. Verifica que el archivo '/assets/plantilla_ascenso.xlsx' exista.");
+  try {
+    // 1. Usamos fetch con respuesta tipo 'arrayBuffer'
+    const response = await fetch('/plantilla_ascenso.xlsx');
+    
+    if (!response.ok) {
+      throw new Error(`Error al descargar la plantilla: ${response.statusText}`);
     }
+
+    const arrayBuffer = await response.arrayBuffer();
+    
+    // 2. Leemos el binario directamente (type: 'array')
+    const wb = XLSX.read(new Uint8Array(arrayBuffer), { type: 'array' });
+    const ws = wb.Sheets[wb.SheetNames[0]];
+
+    // 3. (El resto de tu lógica de mapeo se mantiene igual)
+    const todasLasColumnas = [
+      ...this.premiosDestreza, 
+      ...this.liderazgoColumnas, 
+      ...this.estudiosBiblicos
+    ];
+    
+    let filaInicio = 5; 
+
+    this.muchachos.forEach((m, index) => {
+      const filaActual = filaInicio + index;
+      XLSX.utils.sheet_add_aoa(ws, [[m.nombre]], { origin: `A${filaActual}` });
+      
+      todasLasColumnas.forEach((col, colIndex) => {
+        const valor = m.ascenso[col.id] ? 'X' : '';
+        const celdaRef = XLSX.utils.encode_cell({ r: filaActual - 1, c: colIndex + 1 });
+        XLSX.utils.sheet_add_aoa(ws, [[valor]], { origin: celdaRef });
+      });
+    });
+
+    XLSX.writeFile(wb, `Ascenso_${this.grupoActual}.xlsx`);
+    
+  } catch (error) {
+    console.error("❌ Error al exportar con plantilla:", error);
+    alert("No se pudo cargar o procesar la plantilla. Verifica que esté en /public/plantilla_ascenso.xlsx");
   }
-  
-  async agregarColumna(tipo: string) {
-    const nombre = prompt(`Nombre del nuevo ${tipo}:`);
-    if (!nombre) return;
-
-    const nuevaCol = { id: `${tipo}_${Date.now()}`, label: nombre.toUpperCase() };
-
-    if (tipo === 'destreza') this.premiosDestreza.push(nuevaCol);
-    if (tipo === 'liderazgo') this.liderazgoColumnas.push(nuevaCol);
-    if (tipo === 'biblico') this.estudiosBiblicos.push(nuevaCol);
-
-    await this.guardarConfiguracionColumnas();
-    this.cdr.detectChanges();
-  }
-
-  async eliminarColumna(id: string, tipo: string, label: string) {
-    if (!confirm(`¿Eliminar la columna "${label}"?`)) return;
-
-    if (tipo === 'destreza') this.premiosDestreza = this.premiosDestreza.filter(c => c.id !== id);
-    if (tipo === 'liderazgo') this.liderazgoColumnas = this.liderazgoColumnas.filter(c => c.id !== id);
-    if (tipo === 'biblico') this.estudiosBiblicos = this.estudiosBiblicos.filter(c => c.id !== id);
-
-    await this.guardarConfiguracionColumnas();
-    this.cdr.detectChanges();
-  }
+}
 }
