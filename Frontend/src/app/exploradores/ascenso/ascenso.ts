@@ -70,10 +70,29 @@ export class AscensoComponent implements OnInit {
     await setDoc(configRef, { premiosDestreza: this.premiosDestreza, liderazgoColumnas: this.liderazgoColumnas, estudiosBiblicos: this.estudiosBiblicos }, { merge: true });
   }
 
+  async guardarCambiosEnBaseDatos() {
+    if (!this.firestore) return;
+    this.cargando = true;
+    const nombreColeccion = `${this.grupoActual.toLowerCase()}_lista`;
+    try {
+      for (const muchacho of this.muchachos) {
+        const docRef = doc(this.firestore, nombreColeccion, muchacho.id);
+        await setDoc(docRef, { ascenso: muchacho.ascenso, ultimaActualizacion: new Date() }, { merge: true });
+      }
+      alert(`Progreso de ${this.grupoActual} guardado exitosamente.`);
+    } catch (error) {
+      console.error(error);
+      alert('Error al guardar en la base de datos.');
+    } finally {
+      this.cargando = false;
+      this.cdr.detectChanges();
+    }
+  }
+
   async exportarAExcel() {
     if (this.muchachos.length === 0) return;
     try {
-      const response = await fetch('/plantilla_ascenso.xlsx'); // RUTA CORREGIDA
+      const response = await fetch('/plantilla_ascenso.xlsx'); 
       const arrayBuffer = await response.arrayBuffer();
       const wb = XLSX.read(new Uint8Array(arrayBuffer), { type: 'array' });
       const ws = wb.Sheets[wb.SheetNames[0]];
