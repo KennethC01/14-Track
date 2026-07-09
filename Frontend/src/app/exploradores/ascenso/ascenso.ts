@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule, ActivatedRoute } from '@angular/router';
 import * as XLSX from 'xlsx';
 import { getApp, getApps } from 'firebase/app';
-import { getFirestore, collection, getDocs, doc, setDoc, getDoc, DocumentData, QueryDocumentSnapshot, Firestore } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, doc, setDoc, getDoc, Firestore } from 'firebase/firestore';
 
 @Component({
   selector: 'app-ascenso',
@@ -65,6 +65,26 @@ export class AscensoComponent implements OnInit {
     } catch (error) { console.error('❌ Error cargar datos:', error); }
   }
 
+  // --- MÉTODO REQUERIDO POR TU HTML ---
+  async guardarCambiosEnBaseDatos() {
+    if (!this.firestore) return;
+    this.cargando = true;
+    const nombreColeccion = `${this.grupoActual.toLowerCase()}_lista`;
+    try {
+      for (const muchacho of this.muchachos) {
+        const docRef = doc(this.firestore, nombreColeccion, muchacho.id);
+        await setDoc(docRef, { ascenso: muchacho.ascenso, ultimaActualizacion: new Date() }, { merge: true });
+      }
+      alert(`Progreso de ${this.grupoActual} guardado.`);
+    } catch (error) {
+      console.error(error);
+      alert('Error al guardar.');
+    } finally {
+      this.cargando = false;
+      this.cdr.detectChanges();
+    }
+  }
+
   async guardarConfiguracionColumnas() {
     const configRef = doc(this.firestore, 'configuracion_columnas', this.grupoActual.toUpperCase());
     await setDoc(configRef, { premiosDestreza: this.premiosDestreza, liderazgoColumnas: this.liderazgoColumnas, estudiosBiblicos: this.estudiosBiblicos }, { merge: true });
@@ -73,7 +93,7 @@ export class AscensoComponent implements OnInit {
   async exportarAExcel() {
     if (this.muchachos.length === 0) return;
     try {
-      const response = await fetch('/plantilla_ascenso.xlsx');
+      const response = await fetch('/Plantilla_ascenso.xlsx');
       const arrayBuffer = await response.arrayBuffer();
       const wb = XLSX.read(new Uint8Array(arrayBuffer), { type: 'array', cellStyles: true });
       const ws = wb.Sheets[wb.SheetNames[0]];
@@ -102,29 +122,24 @@ export class AscensoComponent implements OnInit {
       a.href = url;
       a.download = `Ascenso_${this.grupoActual}.xlsx`;
       a.click();
-    } catch (error) {
-      console.error("❌ Error al exportar:", error);
-      alert("No se pudo cargar la plantilla.");
-    }
+    } catch (error) { console.error("❌ Error al exportar:", error); }
   }
 
   async agregarColumna(tipo: string) {
-    const nombre = prompt(`Nombre del nuevo ${tipo}:`);
+    const nombre = prompt(`Nombre:`);
     if (!nombre) return;
     const nuevaCol = { id: `${tipo}_${Date.now()}`, label: nombre.toUpperCase() };
     if (tipo === 'destreza') this.premiosDestreza.push(nuevaCol);
     if (tipo === 'liderazgo') this.liderazgoColumnas.push(nuevaCol);
     if (tipo === 'biblico') this.estudiosBiblicos.push(nuevaCol);
     await this.guardarConfiguracionColumnas();
-    this.cdr.detectChanges();
   }
 
   async eliminarColumna(id: string, tipo: string, label: string) {
-    if (!confirm(`¿Eliminar la columna "${label}"?`)) return;
+    if (!confirm(`¿Eliminar "${label}"?`)) return;
     if (tipo === 'destreza') this.premiosDestreza = this.premiosDestreza.filter(c => c.id !== id);
     if (tipo === 'liderazgo') this.liderazgoColumnas = this.liderazgoColumnas.filter(c => c.id !== id);
     if (tipo === 'biblico') this.estudiosBiblicos = this.estudiosBiblicos.filter(c => c.id !== id);
     await this.guardarConfiguracionColumnas();
-    this.cdr.detectChanges();
   }
 }
