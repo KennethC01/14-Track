@@ -82,7 +82,7 @@ export class AscensoComponent implements OnInit {
   async exportarAExcel() {
     if (this.muchachos.length === 0) return;
     try {
-      const response = await fetch('/Plantilla_ascenso.xlsx');
+     const response = await fetch('/plantilla_ascenso.xlsx');
       const arrayBuffer = await response.arrayBuffer();
       
       // Leer el archivo preservando estilos
