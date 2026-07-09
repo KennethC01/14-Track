@@ -2,7 +2,7 @@ import { Component, OnInit, Inject, PLATFORM_ID, ChangeDetectorRef } from '@angu
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, ActivatedRoute } from '@angular/router';
-import * as XLSX from 'xlsx';
+import * as XLSX from 'xlsx'; // Asegúrate de tener instalado 'xlsx'
 import { getApp, getApps } from 'firebase/app';
 import { getFirestore, collection, getDocs, doc, setDoc, getDoc, Firestore } from 'firebase/firestore';
 
@@ -65,7 +65,6 @@ export class AscensoComponent implements OnInit {
     } catch (error) { console.error('❌ Error cargar datos:', error); }
   }
 
-  // --- MÉTODO REQUERIDO POR TU HTML ---
   async guardarCambiosEnBaseDatos() {
     if (!this.firestore) return;
     this.cargando = true;
@@ -75,19 +74,9 @@ export class AscensoComponent implements OnInit {
         const docRef = doc(this.firestore, nombreColeccion, muchacho.id);
         await setDoc(docRef, { ascenso: muchacho.ascenso, ultimaActualizacion: new Date() }, { merge: true });
       }
-      alert(`Progreso de ${this.grupoActual} guardado.`);
-    } catch (error) {
-      console.error(error);
-      alert('Error al guardar.');
-    } finally {
-      this.cargando = false;
-      this.cdr.detectChanges();
-    }
-  }
-
-  async guardarConfiguracionColumnas() {
-    const configRef = doc(this.firestore, 'configuracion_columnas', this.grupoActual.toUpperCase());
-    await setDoc(configRef, { premiosDestreza: this.premiosDestreza, liderazgoColumnas: this.liderazgoColumnas, estudiosBiblicos: this.estudiosBiblicos }, { merge: true });
+      alert(`Progreso guardado.`);
+    } catch (error) { alert('Error al guardar.'); } 
+    finally { this.cargando = false; this.cdr.detectChanges(); }
   }
 
   async exportarAExcel() {
@@ -95,6 +84,8 @@ export class AscensoComponent implements OnInit {
     try {
       const response = await fetch('/Plantilla_ascenso.xlsx');
       const arrayBuffer = await response.arrayBuffer();
+      
+      // Leer el archivo preservando estilos
       const wb = XLSX.read(new Uint8Array(arrayBuffer), { type: 'array', cellStyles: true });
       const ws = wb.Sheets[wb.SheetNames[0]];
 
@@ -103,18 +94,23 @@ export class AscensoComponent implements OnInit {
 
       this.muchachos.forEach((m, index) => {
         const filaActual = filaInicio + index;
-        const writeCell = (addr: string, val: any) => {
-          if (!ws[addr]) ws[addr] = { t: 's', v: val };
-          else ws[addr].v = val;
-        };
-        writeCell(`A${filaActual}`, m.nombre);
+        
+        // Escribir nombre en A
+        const cellA = ws[XLSX.utils.encode_cell({ r: filaActual - 1, c: 0 })] || { t: 's', v: '' };
+        cellA.v = m.nombre;
+        ws[XLSX.utils.encode_cell({ r: filaActual - 1, c: 0 })] = cellA;
+
+        // Escribir X en las columnas siguientes
         todasLasColumnas.forEach((col, colIndex) => {
           const valor = m.ascenso[col.id] ? 'X' : '';
-          const celdaRef = XLSX.utils.encode_cell({ r: filaActual - 1, c: colIndex + 1 });
-          writeCell(celdaRef, valor);
+          const coord = XLSX.utils.encode_cell({ r: filaActual - 1, c: colIndex + 1 });
+          const cell = ws[coord] || { t: 's', v: '' };
+          cell.v = valor;
+          ws[coord] = cell;
         });
       });
 
+      // Escribir el archivo manteniendo los estilos originales
       const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array', cellStyles: true });
       const data = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
       const url = window.URL.createObjectURL(data);
@@ -122,7 +118,15 @@ export class AscensoComponent implements OnInit {
       a.href = url;
       a.download = `Ascenso_${this.grupoActual}.xlsx`;
       a.click();
-    } catch (error) { console.error("❌ Error al exportar:", error); }
+    } catch (error) {
+      console.error("❌ Error:", error);
+      alert("No se pudo cargar la plantilla o procesar los estilos.");
+    }
+  }
+
+  async guardarConfiguracionColumnas() {
+    const configRef = doc(this.firestore, 'configuracion_columnas', this.grupoActual.toUpperCase());
+    await setDoc(configRef, { premiosDestreza: this.premiosDestreza, liderazgoColumnas: this.liderazgoColumnas, estudiosBiblicos: this.estudiosBiblicos }, { merge: true });
   }
 
   async agregarColumna(tipo: string) {
